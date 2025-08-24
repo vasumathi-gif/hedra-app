@@ -22,15 +22,16 @@ const __dirname = path.dirname(__filename);
 
 // ✅ 1. Allow all localhost frontend ports (8080, 5173, etc.)
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || origin.startsWith('http://localhost')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: [
+    'http://localhost:5173',       // local dev (Vite)
+    'http://localhost:3000',       // local dev (React default)
+    'https://hedra-frontend.onrender.com'  // ✅ your Render frontend
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
+
 
 // ✅ 2. Serve static image files with proper CORS headers
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), {
