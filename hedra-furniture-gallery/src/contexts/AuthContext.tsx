@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from "../../service";
 
 interface AdminUser {
   id: string;
@@ -26,7 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
+    const response = await axios.post(`${API_BASE_URL}auth/login`, { email, password });
 
       const userData: AdminUser = {
         id: response.data.id,
