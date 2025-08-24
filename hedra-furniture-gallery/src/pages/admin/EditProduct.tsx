@@ -57,12 +57,21 @@ export default function EditProduct() {
         });
 
         // Convert specifications object to array for editing
-        const specsArray = Object.entries(product.specifications || {}).map(([key, value]) => ({
-          key,
-          value
-        }));
+  let specsArray: { key: string; value: string }[] = [];
 
-        setSpecifications(specsArray.length > 0 ? specsArray : [{ key: '', value: '' }]);
+      try {
+        if (typeof product.specifications === 'string') {
+          specsArray = JSON.parse(product.specifications); // parse string
+        } else if (Array.isArray(product.specifications)) {
+          specsArray = product.specifications;
+        }
+      } catch (e) {
+        console.warn('Failed to parse specifications:', product.specifications);
+        specsArray = [];
+      }
+
+      setSpecifications(specsArray.length > 0 ? specsArray : [{ key: '', value: '' }]);
+
       }
       setIsLoading(false);
     }
@@ -163,12 +172,12 @@ export default function EditProduct() {
 
       if (!formData.price || isNaN(Number(formData.price))) throw new Error('Valid price is required');
 
-      const specsObject: Record<string, string> = {};
-      specifications.forEach((spec) => {
-        if (spec.key.trim() && spec.value.trim()) {
-          specsObject[spec.key.trim()] = spec.value.trim();
-        }
-      });
+      const specsArray = specifications
+  .filter(spec => spec.key.trim() && spec.value.trim())
+  .map(spec => ({ key: spec.key.trim(), value: spec.value.trim() }));
+
+
+
 
       const tagsArray = formData.tags
         .split(',')
@@ -181,7 +190,7 @@ export default function EditProduct() {
       fd.append('category', formData.category);
       fd.append('price', formData.price); // ✅ new
       fd.append('tags', JSON.stringify(tagsArray)); // ✅ new
-      fd.append('specifications', JSON.stringify(specsObject));
+     fd.append('specifications', JSON.stringify(specsArray));
       fd.append('featured', formData.featured.toString());
       const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
       if (fileInput?.files?.length) {

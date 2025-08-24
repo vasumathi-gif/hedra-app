@@ -116,12 +116,12 @@ const handleSubmit = async (e: React.FormEvent) => {
     if (!formData.price || isNaN(Number(formData.price))) throw new Error('Valid price is required');
 
     // Prepare specifications
-    const specsObject: Record<string, string> = {};
-    specifications.forEach((spec) => {
-      if (spec.key.trim() && spec.value.trim()) {
-        specsObject[spec.key.trim()] = spec.value.trim();
-      }
-    });
+ const specsArray = specifications
+  .filter(spec => spec.key.trim() && spec.value.trim())
+  .map(spec => ({ key: spec.key.trim(), value: spec.value.trim() }));
+
+
+
 
     // Prepare tags
     const tagsArray = formData.tags
@@ -136,7 +136,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     payload.append('category', formData.category);
     payload.append('price', formData.price); // ✅
     payload.append('tags', JSON.stringify(tagsArray)); // ✅
-    payload.append('specifications', JSON.stringify(specsObject)); // ✅
+    payload.append('specifications', JSON.stringify(specsArray));
     payload.append('featured', String(formData.featured));
 
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
