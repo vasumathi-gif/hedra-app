@@ -3,26 +3,18 @@ import path from 'path';
 import fs from 'fs';
 
 export const createProduct = async (req, res) => {
-  const { name, description, category, price, tags,specifications } = req.body;
+  const { name, description, category, price, tags, specifications } = req.body;
   
-  // Get the last product's ID from the database (if any)
+  // Get the last product's ID
   const lastProduct = await prisma.product.findFirst({
-    orderBy: {
-      createdAt: 'desc',
-    },
-    select: {
-      id: true,
-    },
+    orderBy: { createdAt: 'desc' },
+    select: { id: true },
   });
 
-  let newId = 'PR001'; // Default to PR001 if no products exist
-
+  let newId = 'PR001';
   if (lastProduct) {
-    // Extract the numeric part of the last product's ID
     const lastIdNumber = parseInt(lastProduct.id.replace('PR', ''), 10);
-    // Increment the number
     const nextIdNumber = lastIdNumber + 1;
-    // Format the new ID with leading zeros
     newId = `PR${String(nextIdNumber).padStart(3, '0')}`;
   }
 
@@ -30,25 +22,30 @@ export const createProduct = async (req, res) => {
   const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
   const parsedTags = tags ? JSON.parse(tags) : [];
-    const parsedSpecifications = specifications ? JSON.parse(specifications) : [];
+  const parsedSpecifications = specifications ? JSON.parse(specifications) : [];
 
-  // Create the product in the database
+  // Convert specifications object to string
+  const specificationsString = parsedSpecifications.length > 0 
+    ? JSON.stringify(parsedSpecifications) 
+    : null;
+
+  // Create the product
   const product = await prisma.product.create({
     data: {
-      id: newId,  // Use the generated ID
+      id: newId,
       name,
       description,
       category,
       price: parseFloat(price),
-      tags: tags ? JSON.parse(tags) : [],
+      tags: parsedTags,
       imageUrl,
-      specifications: parsedSpecifications,
+      specifications: specificationsString, // <- string now
     },
   });
 
-  // Return the newly created product as a response
   res.status(201).json(product);
 };
+
 
 
 export const getAllProducts = async (req, res) => {

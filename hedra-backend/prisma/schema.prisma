@@ -30,7 +30,7 @@ model Product {
   tags        String[]
   price       Float
   imageUrl    String
-  specifications String?
+  specifications Json? 
   createdAt   DateTime @default(now())
 }
 
