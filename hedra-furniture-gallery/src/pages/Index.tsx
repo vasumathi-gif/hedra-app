@@ -141,9 +141,10 @@ const Index = () => {
                 {categories && categories.length > 0 ? (
                   categories.map((category) => {
                     const categoryProducts = getProductsByCategory(category);
-                    const categoryImage = categoryProducts.length > 0 && categoryProducts[0]?.imageUrl
-                      ? `${baseUrl}${categoryProducts[0]?.imageUrl}`
-                      : null;
+                   const categoryImage = categoryProducts.length > 0 && categoryProducts[0]?.imageUrl
+  ? `${import.meta.env.VITE_FILE_BASE_URL}${categoryProducts[0]?.imageUrl}`
+  : null;
+
                     console.log(categoryImage);
 
                     return (
