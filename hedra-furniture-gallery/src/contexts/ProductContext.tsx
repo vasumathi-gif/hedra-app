@@ -48,14 +48,13 @@ export function ProductProvider({ children }: { children: ReactNode }) {
         const productsData: Product[] = await apiGetRequest('products/getAllProducts', token); // Fetch products from API
 
       const processedProducts = productsData.map((product) => ({
-  ...product,
-images: [
-  product.imageUrl.startsWith("http")
-    ? product.imageUrl
-    : `${FILE_BASE}/${product.imageUrl.replace(/^\/+/, "")}`,
-],
-
-}));
+    ...product,
+    images: [
+      product.imageUrl.startsWith("http")
+        ? product.imageUrl
+        : `${FILE_BASE}api/uploads/${product.imageUrl.replace(/^\/+/, "")}`,
+    ],
+}))
 
 setProducts(processedProducts);
 
