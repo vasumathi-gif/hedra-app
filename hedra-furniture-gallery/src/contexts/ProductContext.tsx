@@ -48,9 +48,9 @@ export function ProductProvider({ children }: { children: ReactNode }) {
       const processedProducts = productsData.map((product) => ({
   ...product,
   images: [
-    product.imageUrl.startsWith('http')
+    product.imageUrl.startsWith("http")
       ? product.imageUrl
-      : `http://localhost:8000${product.imageUrl}`,
+      : `${import.meta.env.VITE_API_BASE_URL}${product.imageUrl}`,
   ],
 }));
 
