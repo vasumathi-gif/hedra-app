@@ -47,11 +47,12 @@ export function ProductProvider({ children }: { children: ReactNode }) {
 
       const processedProducts = productsData.map((product) => ({
   ...product,
-  images: [
-    product.imageUrl.startsWith("http")
-      ? product.imageUrl
-      : `${import.meta.env.VITE_API_BASE_URL}${product.imageUrl}`,
-  ],
+ images: [
+  product.imageUrl.startsWith("http")
+    ? product.imageUrl
+    : `${import.meta.env.VITE_API_BASE_URL.replace(/\/$/, "")}/${product.imageUrl.replace(/^\//, "")}`,
+],
+
 }));
 
 setProducts(processedProducts);

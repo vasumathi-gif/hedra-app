@@ -34,7 +34,7 @@ app.use(cors({
 
 
 // ✅ 2. Serve static image files with proper CORS headers
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), {
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   setHeaders: (res) => {
     res.setHeader('Access-Control-Allow-Origin', '*'); // Or 'http://localhost:8080'
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
