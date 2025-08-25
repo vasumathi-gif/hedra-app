@@ -1,7 +1,6 @@
 {
   "root": "dist",
   "routes": {
-    "/**": "index.html",
-    "/uploads/*": "uploads/*"
+    "/**": "index.html"
   }
 }
