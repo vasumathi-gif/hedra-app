@@ -39,6 +39,8 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string>(''); // Error state
   const token = localStorage.getItem('authToken'); // Example: get token from localStorage
 
+    const FILE_BASE = import.meta.env.VITE_FILE_BASE_URL?.replace(/\/$/, "") || "";
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -47,10 +49,10 @@ export function ProductProvider({ children }: { children: ReactNode }) {
 
       const processedProducts = productsData.map((product) => ({
   ...product,
- images: [
+images: [
   product.imageUrl.startsWith("http")
     ? product.imageUrl
-    : `${import.meta.env.VITE_API_BASE_URL.replace(/\/$/, "")}/${product.imageUrl.replace(/^\//, "")}`,
+    : `${FILE_BASE}/${product.imageUrl.replace(/^\/+/, "")}`,
 ],
 
 }));
