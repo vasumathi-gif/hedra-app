@@ -204,7 +204,7 @@ export default function ProductDetail() {
                     <CardTitle>Specifications</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <dl className="space-y-3">
+                    {/* <dl className="space-y-3">
                       {Object.entries(product.specifications ?? {}).map(([key, value]) => (
 
                         <div key={key} className="flex justify-between border-b border-border pb-2 last:border-b-0">
@@ -212,6 +212,45 @@ export default function ProductDetail() {
                           <dd className="text-muted-foreground">{value}</dd>
                         </div>
                       ))}
+                    </dl> */}
+                    <dl className="space-y-3">
+                      {(() => {
+                        const specs = product.specifications;
+
+                        // Normalize to [label, value] pairs
+                        let pairs: Array<[string, string]> = [];
+
+                        if (Array.isArray(specs)) {
+                          // Backend sends: [{ key: string, value: string }]
+                          pairs = specs
+                            .filter((s: any) => s && typeof s === "object")
+                            .map((s: any, idx: number) => [
+                              String(s.key ?? `Spec ${idx + 1}`),
+                              String(s.value ?? ""),
+                            ]);
+                        } else if (specs && typeof specs === "object") {
+                          // Backend sends: { label: value, ... }
+                          pairs = Object.entries(specs).map(([k, v]) => [String(k), String(v ?? "")]);
+                        }
+
+                        if (pairs.length === 0) {
+                          return (
+                            <p className="text-sm text-muted-foreground">
+                              No specifications provided.
+                            </p>
+                          );
+                        }
+
+                        return pairs.map(([label, val], i) => (
+                          <div
+                            key={`${label}-${i}`}
+                            className="flex justify-between border-b border-border pb-2 last:border-b-0"
+                          >
+                            <dt className="font-medium text-foreground">{label}</dt>
+                            <dd className="text-muted-foreground">{val}</dd>
+                          </div>
+                        ));
+                      })()}
                     </dl>
                   </CardContent>
                 </Card>
