@@ -19,6 +19,7 @@ const Index = () => {
 
   // Base URL for images
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
+   const FILE_BASE = import.meta.env.VITE_FILE_BASE_URL?.replace(/\/$/, "") || "";
 
 
   useEffect(() => {
@@ -141,9 +142,12 @@ const Index = () => {
                 {categories && categories.length > 0 ? (
                   categories.map((category) => {
                     const categoryProducts = getProductsByCategory(category);
-                    const categoryImage = categoryProducts.length > 0 && categoryProducts[0]?.imageUrl
-                      ? `${import.meta.env.VITE_FILE_BASE_URL}${categoryProducts[0]?.imageUrl}`
-                      : null;
+                   const categoryImage = categoryProducts.length > 0 && categoryProducts[0]?.imageUrl
+  ? categoryProducts[0].imageUrl.startsWith('http')
+    ? categoryProducts[0].imageUrl // External URL (ImgBB)
+    : `${FILE_BASE}/${categoryProducts[0].imageUrl.replace(/^\/+/, '')}` // Local image URL
+  : null;
+
 
                     console.log(categoryImage);
 
