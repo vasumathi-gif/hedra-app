@@ -119,7 +119,13 @@ export const updateProduct = async (req, res) => {
         const oldPath = path.join(process.cwd(), 'public', existingProduct.imageUrl);
         fs.existsSync(oldPath) && fs.unlinkSync(oldPath);
       }
-      imageUrl = `/uploads/${req.file.filename}`;
+       // Upload the new image to ImgBB and get the URL
+      try {
+        const uploadedImageUrl = await uploadImageToImgBB(req.file.path); // Assume req.file.path is the local path to the uploaded image
+        imageUrl = uploadedImageUrl; // Set the image URL from ImgBB
+      } catch (error) {
+        return res.status(500).json({ message: 'Failed to upload image to ImgBB', error: error.message });
+      }
     }
 
     let parsedTags = [];
