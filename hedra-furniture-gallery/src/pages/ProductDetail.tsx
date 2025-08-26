@@ -13,12 +13,17 @@ export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const { getProductById, products } = useProducts();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  console.log("Product ID from URL:", id);
+  const product = getProductById(id);
+  console.log('Fetched Product:', product);
 
   if (!id) {
     return <Navigate to="/catalog" replace />;
   }
 
-  const product = getProductById(id);
+  // const product = getProductById(id);
+  // console.log(product); 
+  // console.log('Fetched Product:', product);
 
   if (!product) {
     return (
@@ -55,6 +60,11 @@ export default function ProductDetail() {
     setCurrentImageIndex((prev) =>
       prev === 0 ? product.images.length - 1 : prev - 1
     );
+  };
+
+    // Utility to concatenate class names
+  const cn = (...classes: string[]) => {
+    return classes.filter(Boolean).join(' ');
   };
 
   return (
@@ -334,3 +344,5 @@ export default function ProductDetail() {
     </div>
   );
 }
+
+
