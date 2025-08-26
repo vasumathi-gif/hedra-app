@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,47 +6,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { useToast } from '@/hooks/use-toast';
-import { apiGetRequest } from '../../service';
-import { cn } from '@/lib/utils';
 import { useProducts } from '@/contexts/ProductContext';
+import { cn } from '@/lib/utils';
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const { getProductById, products } = useProducts();
-  const [product, setProduct] = useState<any>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const toast = useToast();
+  console.log("Product ID from URL:", id);
+  const product = getProductById(id);
+  console.log('Fetched Product:', product);
 
-  const token = localStorage.getItem('authToken') || '';
-
-  // Fetch the product details by ID when component mounts
-useEffect(() => {
-  const fetchProduct = async () => {
-    try {
-      const fetchedProduct = await apiGetRequest(`products/getProductById/${id}`, token);
-      // Ensure images is an array
-      const images = fetchedProduct.imageUrl ? [fetchedProduct.imageUrl] : [];
-      setProduct({ ...fetchedProduct, images }); // Initialize product with the images array
-      setLoading(false);
-      console.log('Fetched Product:', fetchedProduct);
-    } catch (err) {
-      setError('Product not found');
-      setLoading(false);
-    }
-  };
-
-  fetchProduct();
-}, [id, token]);
-
-
-  if (loading) {
-    return <div>Loading...</div>;
+  if (!id) {
+    return <Navigate to="/catalog" replace />;
   }
 
-  if (error || !product) {
+  // const product = getProductById(id);
+  // console.log(product); 
+  // console.log('Fetched Product:', product);
+
+  if (!product) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
@@ -83,6 +62,11 @@ useEffect(() => {
     );
   };
 
+    // Utility to concatenate class names
+  const cn = (...classes: string[]) => {
+    return classes.filter(Boolean).join(' ');
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -92,15 +76,14 @@ useEffect(() => {
         <section className="py-4 border-b border-border">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <nav className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <Link to="/" className="hover:text-primary transition-colors">
-                Home
-              </Link>
+              <Link to="/" className="hover:text-primary transition-colors">Home</Link>
               <span>/</span>
-              <Link to="/catalog" className="hover:text-primary transition-colors">
-                Catalog
-              </Link>
+              <Link to="/catalog" className="hover:text-primary transition-colors">Catalog</Link>
               <span>/</span>
-              <Link to={`/catalog/${product.category}`} className="hover:text-primary transition-colors capitalize">
+              <Link
+                to={`/catalog/${product.category}`}
+                className="hover:text-primary transition-colors capitalize"
+              >
                 {product.category.replace('-', ' ')}
               </Link>
               <span>/</span>
@@ -147,8 +130,8 @@ useEffect(() => {
                           <button
                             key={index}
                             className={cn(
-                              'w-2 h-2 rounded-full transition-colors',
-                              index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                              "w-2 h-2 rounded-full transition-colors",
+                              index === currentImageIndex ? "bg-white" : "bg-white/50"
                             )}
                             onClick={() => setCurrentImageIndex(index)}
                           />
@@ -165,10 +148,10 @@ useEffect(() => {
                       <button
                         key={index}
                         className={cn(
-                          'aspect-square rounded-md overflow-hidden border-2 transition-colors',
+                          "aspect-square rounded-md overflow-hidden border-2 transition-colors",
                           index === currentImageIndex
-                            ? 'border-primary'
-                            : 'border-border hover:border-primary/50'
+                            ? "border-primary"
+                            : "border-border hover:border-primary/50"
                         )}
                         onClick={() => setCurrentImageIndex(index)}
                       >
@@ -197,12 +180,16 @@ useEffect(() => {
                     )}
                   </div>
 
-                  <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{product.name}</h1>
+                  <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                    {product.name}
+                  </h1>
 
-                  <p className="text-lg text-muted-foreground leading-relaxed">{product.description}</p>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    {product.description}
+                  </p>
                   {/* Price */}
                   <p className="text-xl font-semibold text-foreground mt-2">
-                    ₹ {product.price?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    ₹ {product.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
 
@@ -222,7 +209,7 @@ useEffect(() => {
                 </div>
 
                 {/* Specifications */}
-              <Card>
+                <Card>
                   <CardHeader>
                     <CardTitle>Specifications</CardTitle>
                   </CardHeader>
@@ -277,7 +264,6 @@ useEffect(() => {
                     </dl>
                   </CardContent>
                 </Card>
-
                 {/* Tags */}
                 {product.tags && product.tags.length > 0 && (
                   <Card>
@@ -294,21 +280,18 @@ useEffect(() => {
                   </Card>
                 )}
 
+
                 {/* Additional Info */}
                 <Card>
                   <CardContent className="pt-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                       <div>
                         <h4 className="font-medium text-foreground mb-2">Quality Guarantee</h4>
-                        <p className="text-muted-foreground">
-                          All our furniture comes with a comprehensive quality guarantee.
-                        </p>
+                        <p className="text-muted-foreground">All our furniture comes with a comprehensive quality guarantee.</p>
                       </div>
                       <div>
                         <h4 className="font-medium text-foreground mb-2">Custom Options</h4>
-                        <p className="text-muted-foreground">
-                          Available for customization to fit your specific requirements.
-                        </p>
+                        <p className="text-muted-foreground">Available for customization to fit your specific requirements.</p>
                       </div>
                     </div>
                   </CardContent>
@@ -344,7 +327,9 @@ useEffect(() => {
                         <h3 className="font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
                           {relatedProduct.name}
                         </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2">{relatedProduct.description}</p>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {relatedProduct.description}
+                        </p>
                       </CardContent>
                     </Card>
                   </Link>
@@ -359,3 +344,5 @@ useEffect(() => {
     </div>
   );
 }
+
+
