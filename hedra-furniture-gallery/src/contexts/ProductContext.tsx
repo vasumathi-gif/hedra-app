@@ -10,7 +10,7 @@ export interface Product {
   images: string[];
   specifications?: Record<string, string>;
   price?: number; // ✅ Add this
-  tags?: string[]; 
+  tags?: string[];
   imageUrl: string;
   featured?: boolean;
   createdAt: Date;
@@ -39,7 +39,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string>(''); // Error state
   const token = localStorage.getItem('authToken'); // Example: get token from localStorage
 
-    const FILE_BASE = import.meta.env.VITE_FILE_BASE_URL?.replace(/\/$/, "") || "";
+  const FILE_BASE = import.meta.env.VITE_FILE_BASE_URL?.replace(/\/$/, "") || "";
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -47,17 +47,18 @@ export function ProductProvider({ children }: { children: ReactNode }) {
         setLoading(true); // Start loading
         const productsData: Product[] = await apiGetRequest('products/getAllProducts', token); // Fetch products from API
 
-      const processedProducts = productsData.map((product) => ({
-  ...product,
-images: [
-  product.imageUrl.startsWith("http")
-    ? product.imageUrl
-    : `${FILE_BASE}/${product.imageUrl.replace(/^\/+/, "")}`,
-],
+        const processedProducts = productsData.map((product) => ({
+          ...product,
+          images: [
+            product.imageUrl.startsWith("http")
+              ? product.imageUrl // External image (ImgBB)
+              : `${FILE_BASE}/${product.imageUrl.replace(/^\/+/, "")}`, // Local image
+          ],
 
-}));
 
-setProducts(processedProducts);
+        }));
+
+        setProducts(processedProducts);
 
 
         // Extract unique categories dynamically from the fetched products
@@ -66,7 +67,7 @@ setProducts(processedProducts);
 
         console.log('Fetched Products: ', productsData); // Debugging: log fetched products
         console.log('Categories: ', fetchedCategories); // Debugging: log categories
-        
+
       } catch (err) {
         setError('Failed to load products'); // Set error message if fetching fails
       } finally {
@@ -86,43 +87,43 @@ setProducts(processedProducts);
     };
     setProducts(prev => [...prev, newProduct]);
   };
-  
-
-const updateProduct = async (id: string, productData: Partial<Product>) => {
-  const token = JSON.parse(localStorage.getItem('adminUser') || '{}')?.token;
-  if (!token) throw new Error('Unauthorized: No token found');
-
-  const formData = new FormData();
-  formData.append('name', productData.name || '');
-  formData.append('description', productData.description || '');
-  formData.append('category', productData.category || '');
-  formData.append('price', String((productData as any).price || '0'));
-  formData.append('tags', JSON.stringify((productData as any).tags || []));
-
-  if ((productData as any).image instanceof File) {
-    formData.append('image', (productData as any).image);
-  }
-
-  try {
-    const updatedProduct = await apiPutRequest(`products/updateProduct/${id}`, formData, token);
-
-    setProducts(prev =>
-      prev.map(product => (product.id === id ? { ...product, ...updatedProduct } : product))
-    );
-  } catch (error) {
-    console.error('❌ Failed to update product:', error);
-    throw error;
-  }
-};
 
 
- const deleteProduct = async (id: string) => {
-  const token = JSON.parse(localStorage.getItem('adminUser') || '{}')?.token;
+  const updateProduct = async (id: string, productData: Partial<Product>) => {
+    const token = JSON.parse(localStorage.getItem('adminUser') || '{}')?.token;
+    if (!token) throw new Error('Unauthorized: No token found');
 
-  if (!token) throw new Error('Unauthorized: No token found');
+    const formData = new FormData();
+    formData.append('name', productData.name || '');
+    formData.append('description', productData.description || '');
+    formData.append('category', productData.category || '');
+    formData.append('price', String((productData as any).price || '0'));
+    formData.append('tags', JSON.stringify((productData as any).tags || []));
 
-  await apiDeleteRequest(`products/deleteProduct/${id}`, token); // ✅ full path
-};
+    if ((productData as any).image instanceof File) {
+      formData.append('image', (productData as any).image);
+    }
+
+    try {
+      const updatedProduct = await apiPutRequest(`products/updateProduct/${id}`, formData, token);
+
+      setProducts(prev =>
+        prev.map(product => (product.id === id ? { ...product, ...updatedProduct } : product))
+      );
+    } catch (error) {
+      console.error('❌ Failed to update product:', error);
+      throw error;
+    }
+  };
+
+
+  const deleteProduct = async (id: string) => {
+    const token = JSON.parse(localStorage.getItem('adminUser') || '{}')?.token;
+
+    if (!token) throw new Error('Unauthorized: No token found');
+
+    await apiDeleteRequest(`products/deleteProduct/${id}`, token); // ✅ full path
+  };
 
   const getProductsByCategory = (category: string) => {
     return products.filter(product => product.category === category);
