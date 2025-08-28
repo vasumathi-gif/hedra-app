@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link ,useNavigate} from 'react-router-dom';
 import { Plus, Edit, Trash2, Search, Star, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +16,7 @@ import { apiDeleteRequest } from 'service';
 export default function AdminProducts() {
   const { isAuthenticated } = useAuth();
  const { products, deleteProduct } = useProducts()
+ const navigate = useNavigate(); 
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | 'all'>('all');
@@ -51,6 +52,10 @@ const handleDeleteProduct = async (productId: string, productName: string) => {
       });
     }
   }
+};
+
+const handleViewProduct = (productId: string) => {
+  navigate("/product", { state: { id: productId } });
 };
 
 
@@ -156,11 +161,9 @@ const handleDeleteProduct = async (productId: string, productName: string) => {
                     </div>
                   )}
                   <div className="absolute top-2 right-2">
-                    <Link to={`/product/${product.id}`} target="_blank">
-                      <Button variant="secondary" size="sm">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </Link>
+                   <Button variant="secondary" size="sm" onClick={() => handleViewProduct(product.id)}>
+  <Eye className="h-4 w-4" />
+</Button>
                   </div>
                 </div>
                 
@@ -185,12 +188,15 @@ const handleDeleteProduct = async (productId: string, productName: string) => {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Link to={`/admin/products/edit/${product.id}`} className="flex-1">
-                      <Button variant="outline" size="sm" className="w-full">
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit
-                      </Button>
-                    </Link>
+                    <Button
+      variant="outline"
+      size="sm"
+      className="w-full"
+      onClick={() => navigate("/admin/products/edit", { state: { id: product.id } })} // ✅ use navigate
+    >
+      <Edit className="mr-2 h-4 w-4" />
+      Edit
+    </Button>
                     <Button
                       variant="outline"
                       size="sm"

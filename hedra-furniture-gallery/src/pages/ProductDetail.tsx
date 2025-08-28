@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams, Link, Navigate,useLocation } from 'react-router-dom';
 import { ArrowLeft, Heart, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,14 +10,19 @@ import { useProducts } from '@/contexts/ProductContext';
 import { cn } from '@/lib/utils';
 
 export default function ProductDetail() {
-  const { id } = useParams<{ id: string }>();
+   const { state } = useLocation();
+  const productId = state?.id;  // Get id from state passed by navigate
+
+  if (!productId) {
+    return <Navigate to="/catalog" replace />;
+  }
   const { getProductById, products } = useProducts();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  console.log("Product ID from URL:", id);
-  const product = getProductById(id);
+  console.log("Product ID from URL:", productId);
+  const product = getProductById(productId);
   console.log('Fetched Product:', product);
 
-  if (!id) {
+  if (!productId) {
     return <Navigate to="/catalog" replace />;
   }
 

@@ -41,7 +41,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/catalog/:category" element={<Catalog />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/product" element={<ProductDetail />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/services" element={<Services />} />
               <Route path="/about" element={<About />} />
@@ -52,7 +52,7 @@ const App = () => (
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/products" element={<AdminProducts />} />
               <Route path="/admin/products/add" element={<AddProduct />} />
-              <Route path="/admin/products/edit/:id" element={<EditProduct />} />
+              <Route path="/admin/products/edit" element={<EditProduct />} />
               
               {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />

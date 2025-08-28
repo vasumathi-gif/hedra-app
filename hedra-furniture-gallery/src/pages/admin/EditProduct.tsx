@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams,useLocation } from 'react-router-dom';
 import { ArrowLeft, Save, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +21,9 @@ export default function EditProduct() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const token = JSON.parse(localStorage.getItem('adminUser') || '{}')?.token;
-  const { id } = useParams<{ id: string }>();
+ 
+const { state } = useLocation();
+const productId = state?.id; // ✅ this is your id
 
   const [formData, setFormData] = useState({
     name: '',
@@ -42,8 +44,8 @@ export default function EditProduct() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (id) {
-      const product = getProductById(id);
+    if (productId) {
+      const product = getProductById(productId);
       if (product) {
         setFormData({
           name: product.name,
@@ -75,17 +77,17 @@ export default function EditProduct() {
       }
       setIsLoading(false);
     }
-  }, [id, getProductById]);
+  }, [productId, getProductById]);
 
   if (!isAuthenticated) {
     return <Navigate to="/admin" replace />;
   }
 
-  if (!id) {
+  if (!productId) {
     return <Navigate to="/admin/products" replace />;
   }
 
-  const product = getProductById(id);
+  const product = getProductById(productId);
   if (!isLoading && !product) {
     return (
       <AdminLayout>
@@ -201,7 +203,7 @@ for (const [key, value] of fd.entries()) {
   console.log(`${key}:`, value);
 }
 
-      const response = await apiPutRequest(`products/updateProduct/${id}`, fd, token);
+      const response = await apiPutRequest(`products/updateProduct/${productId}`, fd, token);
 
   console.log('✅ Update response:', response);
 

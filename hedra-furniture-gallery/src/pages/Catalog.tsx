@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useNavigate,useParams } from 'react-router-dom';
 import { Search, Filter, Grid3X3, List, Download } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -15,6 +15,7 @@ import { PRODUCT_CATEGORIES, ProductCategory } from '@/types/product';
 import { cn } from '@/lib/utils';
 
 export default function Catalog() {
+  const navigate = useNavigate();
   const { category } = useParams<{ category: ProductCategory }>();
   const { products, getProductsByCategory, searchProducts } = useProducts();
   const [searchQuery, setSearchQuery] = useState('');
@@ -76,6 +77,11 @@ export default function Catalog() {
 
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save('catalog.pdf');
+  };
+
+  // Function to navigate to the Product Detail page and pass the ID in the state
+  const handleViewProduct = (productId: string) => {
+    navigate("/product", { state: { id: productId } });
   };
 
   return (
@@ -184,9 +190,7 @@ export default function Catalog() {
                   {groupedByCategory.map(([categoryKey, categoryProducts]) => {
                     const firstProduct = categoryProducts[0];
                     return (
-                     
-                <Link key={firstProduct.id} to={`/product/${firstProduct.id}`} className="group">
-
+                      <div key={firstProduct.id} onClick={() => handleViewProduct(firstProduct.id)}>
                         <Card className="overflow-hidden hover:shadow-card transition-all duration-300">
                           <div className="aspect-[4/3] overflow-hidden">
                             <img
@@ -206,14 +210,14 @@ export default function Catalog() {
                             </p>
                           </CardContent>
                         </Card>
-                      </Link>
+                      </div>
                     );
                   })}
                 </div>
               ) : (
                 <div className="space-y-6">
                   {filteredProducts.map((product) => (
-                    <Link key={product.id} to={`/product/${product.id}`} className="group">
+                    <div key={product.id} onClick={() => handleViewProduct(product.id)}>
                       <Card className="overflow-hidden hover:shadow-card transition-all duration-300">
                         <div className="flex flex-col md:flex-row">
                           <div className="md:w-64 aspect-[4/3] md:aspect-auto overflow-hidden">
@@ -251,7 +255,7 @@ export default function Catalog() {
                           </CardContent>
                         </div>
                       </Card>
-                    </Link>
+                    </div>
                   ))}
                 </div>
               )
