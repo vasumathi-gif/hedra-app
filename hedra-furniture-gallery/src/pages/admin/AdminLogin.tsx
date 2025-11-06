@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import edendekLogo from "../../assets/icons/300px.png";
 
 export default function AdminLogin() {
   const { login } = useAuth();
@@ -64,12 +65,12 @@ export default function AdminLogin() {
         <Card className="shadow-elegant">
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4">
-              <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">HF</span>
+              <div className=" items-center justify-center">
+                 <img src={edendekLogo} alt="Edendek logo" className="block h-8 w-auto" />
               </div>
             </div>
             <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
-            <p className="text-muted-foreground">Access the Hedra Fabrications admin panel</p>
+            <p className="text-muted-foreground">Access the Edendek admin panel</p>
           </CardHeader>
 
           <CardContent>
@@ -85,7 +86,7 @@ export default function AdminLogin() {
                   required
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="admin@hedrafabrications.com"
+                  placeholder="info@edendek.com.com"
                   disabled={isLoading}
                 />
               </div>
@@ -145,7 +146,7 @@ export default function AdminLogin() {
             <div className="mt-6 p-4 bg-muted/50 rounded-lg">
               <h4 className="text-sm font-medium text-foreground mb-2">Admin Access Only</h4>
               <div className="text-sm text-muted-foreground space-y-1">
-                <p>This login is reserved for Hedra Fabrications admins. Please use valid credentials to proceed.</p>
+                <p>This login is reserved for Edendek admins. Please use valid credentials to proceed.</p>
               </div>
             </div>
           </CardContent>

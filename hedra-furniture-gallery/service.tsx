@@ -28,6 +28,7 @@ export const apiPostRequest = async (endpoint, payload, token = null) => {
       : {};
 
     const response = await axios.post(`${API_BASE_URL}${endpoint}`, payload, { headers });
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error(`❌ Error on POST ${endpoint}:`, error.response || error.message);

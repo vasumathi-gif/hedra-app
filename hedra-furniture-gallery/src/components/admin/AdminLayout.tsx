@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Package, Plus, Settings, LogOut, Eye } from 'lucide-react';
+import { Home, Package, Plus, Settings, LogOut, Eye,FileUp, Tags } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import edendekLogo from "../../assets/icons/300px.png";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,8 @@ const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: Home },
   { name: 'Products', href: '/admin/products', icon: Package },
   { name: 'Add Product', href: '/admin/products/add', icon: Plus },
+  { name: 'Upload Catalogue', href: '/admin/catalogue/upload', icon: FileUp },
+  { name: 'Catalogue', href: '/admin/catalogue', icon: Tags },
 ];
 
 export function AdminLayout({ children }: AdminLayoutProps) {
@@ -29,16 +32,12 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       <div className="w-64 bg-card border-r border-border flex flex-col">
         {/* Logo */}
         <div className="p-6 border-b border-border">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">HF</span>
-            </div>
-            <div>
-              <h2 className="font-bold text-foreground">Hedra Admin</h2>
-              <p className="text-xs text-muted-foreground">Admin Panel</p>
-            </div>
-          </div>
-        </div>
+  <div className="flex flex-col items-center space-y-2"> {/* Add space between logo and text */}
+    <img src={edendekLogo} alt="Edendek logo" className="block h-8 w-auto" /> {/* Increased size here */}
+    <p className="text-xs text-muted-foreground">Admin Panel</p> {/* Admin Panel text under the logo */}
+  </div>
+</div>
+
 
         {/* Navigation */}
         <nav className="flex-1 p-4">
@@ -67,7 +66,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
           <div className="mt-8 pt-4 border-t border-border">
             <a
-              href="/catalog"
+              href="/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"

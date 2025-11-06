@@ -21,6 +21,10 @@ export default function EditProduct() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const token = JSON.parse(localStorage.getItem('adminUser') || '{}')?.token;
+  // under other useState lines
+const [initialImages, setInitialImages] = useState<string[]>([]); // images originally from DB
+const [newFiles, setNewFiles] = useState<File[]>([]);             // files selected now
+
  
 const { state } = useLocation();
 const productId = state?.id; // ✅ this is your id
@@ -32,6 +36,7 @@ const productId = state?.id; // ✅ this is your id
     featured: false,
     price: '',
     tags: '',
+    bestSeller: false, 
     specifications: {} as Record<string, string>,
     images: [] as string[]
   });
@@ -53,10 +58,12 @@ const productId = state?.id; // ✅ this is your id
           category: product.category as ProductCategory,
           featured: product.featured || false,
           specifications: product.specifications,
+           bestSeller: product.bestSeller || false,
           images: product.images,
           price: product.price?.toString() || '',
           tags: product.tags?.join(', ') || ''
-        });
+        }); 
+        setInitialImages(product.images || []);
 
         // Convert specifications object to array for editing
   let specsArray: { key: string; value: string }[] = [];
@@ -142,18 +149,26 @@ const productId = state?.id; // ✅ this is your id
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      // In a real application, you would upload these files to a server or cloud storage
-      // For demo purposes, we'll create temporary URLs
-      const imageUrls = Array.from(files).map(file => URL.createObjectURL(file));
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, ...imageUrls]
-      }));
-    }
-  };
+const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const files = e.target.files;
+  if (!files) return;
+
+  const arr = Array.from(files);
+
+  // store real files for submit
+  setNewFiles(prev => [...prev, ...arr]);
+
+  // keep your previews
+  const imageUrls = arr.map(file => URL.createObjectURL(file));
+  setFormData(prev => ({
+    ...prev,
+    images: [...prev.images, ...imageUrls]
+  }));
+
+  // allow re-selecting the same file
+  e.currentTarget.value = '';
+};
+
 
   const removeImage = (index: number) => {
     setFormData(prev => ({
@@ -162,69 +177,88 @@ const productId = state?.id; // ✅ this is your id
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const handleBestSellerChange = (checked: boolean) => {
+  setFormData(prev => ({
+    ...prev,
+    bestSeller: checked
+  }));
+};
 
-    try {
-      if (!formData.name.trim()) throw new Error('Product name is required');
-      if (!formData.description.trim()) throw new Error('Product description is required');
-      if (!formData.category) throw new Error('Product category is required');
-      if (formData.images.length === 0) throw new Error('At least one product image is required');
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-      if (!formData.price || isNaN(Number(formData.price))) throw new Error('Valid price is required');
+  try {
+    // --- your existing validations ---
+    if (!formData.name.trim()) throw new Error('Product name is required');
+    if (!formData.description.trim()) throw new Error('Product description is required');
+    if (!formData.category) throw new Error('Product category is required');
+    if (!formData.price || isNaN(Number(formData.price))) throw new Error('Valid price is required');
 
-      const specsArray = specifications
-  .filter(spec => spec.key.trim() && spec.value.trim())
-  .map(spec => ({ key: spec.key.trim(), value: spec.value.trim() }));
+    // ✅ figure out which original URLs remain after deletions
+    const imagesToKeep = initialImages.filter(url => formData.images.includes(url));
 
-
-
-
-      const tagsArray = formData.tags
-        .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
-
-      const fd = new FormData();
-      fd.append('name', formData.name);
-      fd.append('description', formData.description);
-      fd.append('category', formData.category);
-      fd.append('price', formData.price); // ✅ new
-      fd.append('tags', JSON.stringify(tagsArray)); // ✅ new
-     fd.append('specifications', JSON.stringify(specsArray));
-      fd.append('featured', formData.featured.toString());
-      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-      if (fileInput?.files?.length) {
-        fd.append('image', fileInput.files[0]); // Upload only one image for update (optional logic)
-      }
-      console.log('--- FormData Payload ---');
-for (const [key, value] of fd.entries()) {
-  console.log(`${key}:`, value);
-}
-
-      const response = await apiPutRequest(`products/updateProduct/${productId}`, fd, token);
-
-  console.log('✅ Update response:', response);
-
-      toast({
-        title: 'Product Updated',
-        description: `"${formData.name}" has been updated successfully.`,
-      });
-
-
-      navigate('/admin/products');
-      window.location.reload();
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Update failed',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSubmitting(false);
+    // ✅ make sure at least one image will remain (old kept + new added)
+    if (imagesToKeep.length === 0 && newFiles.length === 0) {
+      throw new Error('At least one product image is required');
     }
-  };
+
+    const specsArray = specifications
+      .filter(spec => spec.key.trim() && spec.value.trim())
+      .map(spec => ({ key: spec.key.trim(), value: spec.value.trim() }));
+
+    const tagsArray = formData.tags
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(Boolean);
+
+    const fd = new FormData();
+    fd.append('name', formData.name);
+    fd.append('description', formData.description);
+    fd.append('category', formData.category);
+    fd.append('price', formData.price);
+    fd.append('tags', JSON.stringify(tagsArray));
+    fd.append('specifications', JSON.stringify(specsArray));
+    fd.append('bestSeller', String(formData.bestSeller));
+    fd.append('featured', String(formData.featured));
+
+    // ✅ tell backend exactly which old images to keep
+    fd.append('imagesToKeep', JSON.stringify(imagesToKeep));
+
+    // ✅ send ALL new files (not just one)
+    newFiles.forEach(file => fd.append('newImages', file));
+
+    console.log('--- FormData Payload ---');
+    for (const [key, value] of fd.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}: File(${value.name}, ${value.size} bytes, ${value.type})`);
+      } else {
+        try { console.log(`${key}:`, JSON.parse(value as string)); }
+        catch { console.log(`${key}:`, value); }
+      }
+    }
+
+    const response = await apiPutRequest(`products/updateProduct/${productId}`, fd, token);
+    console.log('✅ Update response:', response);
+
+    toast({
+      title: 'Product Updated',
+      description: `"${formData.name}" has been updated successfully.`,
+    });
+
+    navigate('/admin/products');
+    window.location.reload();
+  } catch (error) {
+    toast({
+      title: 'Error',
+      description: error instanceof Error ? error.message : 'Update failed',
+      variant: 'destructive',
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
 
   if (isLoading) {
@@ -327,7 +361,7 @@ for (const [key, value] of fd.entries()) {
                       placeholder="e.g. modern,wood,minimalist"
                     />
                   </div>
-
+{/* 
 
                   <div className="flex items-center space-x-2">
                     <Switch
@@ -336,7 +370,7 @@ for (const [key, value] of fd.entries()) {
                       onCheckedChange={handleFeaturedChange}
                     />
                     <Label htmlFor="featured">Featured Product</Label>
-                  </div>
+                  </div> */}
                 </CardContent>
               </Card>
 
@@ -380,6 +414,15 @@ for (const [key, value] of fd.entries()) {
                   </Button>
                 </CardContent>
               </Card>
+              <div className="flex items-center space-x-2">
+  <Switch
+    id="bestSeller"
+    checked={formData.bestSeller}
+    onCheckedChange={handleBestSellerChange}
+  />
+  <Label htmlFor="bestSeller">Best Seller Product</Label>
+</div>
+
             </div>
 
             {/* Images */}

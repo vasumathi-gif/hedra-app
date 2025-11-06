@@ -222,7 +222,7 @@ export default function AdminDashboard() {
                 </Button>
               </Link>
 
-              <a href="/catalog" target="_blank" rel="noopener noreferrer">
+              <a href="/" target="_blank" rel="noopener noreferrer">
                 <Button variant="outline" className="w-full justify-start h-auto p-4">
                   <Eye className="mr-3 h-5 w-5" />
                   <div className="text-left">

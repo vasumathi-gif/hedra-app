@@ -13,6 +13,7 @@ export interface Product {
   tags?: string[];
   imageUrl: string;
   featured?: boolean;
+  bestSeller?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -40,43 +41,66 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   const token = localStorage.getItem('authToken'); // Example: get token from localStorage
 
   const FILE_BASE = import.meta.env.VITE_FILE_BASE_URL?.replace(/\/$/, "") || "";
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const productsData: any[] = await apiGetRequest('products/getAllProducts', token);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true); // Start loading
-        const productsData: Product[] = await apiGetRequest('products/getAllProducts', token); // Fetch products from API
+      const toAbsUrl = (url: string) =>
+        url?.startsWith('http')
+          ? url
+          : `${FILE_BASE}/${url?.replace(/^\/+/, '')}`;
 
-        const processedProducts = productsData.map((product) => ({
-          ...product,
-          images: [
-            product.imageUrl.startsWith("http")
-              ? product.imageUrl // External image (ImgBB)
-              : `${FILE_BASE}/${product.imageUrl.replace(/^\/+/, "")}`, // Local image
-          ],
+      const processedProducts: Product[] = productsData.map((p) => {
+        let images: string[] = [];
 
+        // Prefer existing array if backend already sends `images`
+        if (Array.isArray(p.images)) {
+          images = p.images.filter(Boolean).map(toAbsUrl);
+        } else if (typeof p.imageUrl === 'string' && p.imageUrl.trim()) {
+          const s = p.imageUrl.trim();
+          if (s.startsWith('[')) {
+            // JSON array of URLs in imageUrl
+            try {
+              const arr = JSON.parse(s);
+              if (Array.isArray(arr)) {
+                images = arr.filter(Boolean).map(toAbsUrl);
+              }
+            } catch {
+              // ignore parse error; fallback below
+            }
+          } else {
+            // single URL string
+            images = [toAbsUrl(s)];
+          }
+        }
 
-        }));
+        return {
+          ...p,
+          images,
+          // ensure dates are Date objects
+          createdAt: p.createdAt ? new Date(p.createdAt) : new Date(),
+          updatedAt: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+        } as Product;
+      });
 
-        setProducts(processedProducts);
+      setProducts(processedProducts);
 
+      const fetchedCategories: string[] = [
+        ...new Set(processedProducts.map((product) => product.category)),
+      ];
+      setCategories(fetchedCategories);
+    } catch (err) {
+      setError('Failed to load products');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // Extract unique categories dynamically from the fetched products
-        const fetchedCategories: string[] = [...new Set(productsData.map((product: Product) => product.category))];
-        setCategories(fetchedCategories); // Set categories dynamically
+  fetchProducts();
+}, [token, FILE_BASE]);
 
-        console.log('Fetched Products: ', productsData); // Debugging: log fetched products
-        console.log('Categories: ', fetchedCategories); // Debugging: log categories
-
-      } catch (err) {
-        setError('Failed to load products'); // Set error message if fetching fails
-      } finally {
-        setLoading(false); // End loading
-      }
-    };
-
-    fetchProducts(); // Call the API when the component mounts
-  }, [token]);
 
   const addProduct = (productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newProduct: Product = {

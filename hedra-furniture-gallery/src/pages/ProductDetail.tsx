@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, Link, Navigate,useLocation } from 'react-router-dom';
+import { useParams, Link, Navigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Heart, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +10,7 @@ import { useProducts } from '@/contexts/ProductContext';
 import { cn } from '@/lib/utils';
 
 export default function ProductDetail() {
-   const { state } = useLocation();
+  const { state } = useLocation();
   const productId = state?.id;  // Get id from state passed by navigate
 
   if (!productId) {
@@ -67,10 +67,43 @@ export default function ProductDetail() {
     );
   };
 
-    // Utility to concatenate class names
+  // Utility to concatenate class names
   const cn = (...classes: string[]) => {
     return classes.filter(Boolean).join(' ');
   };
+
+
+  const specPairs = React.useMemo(() => {
+    const raw = product.specifications;
+    let specs: any = raw;
+
+    // 1) Parse if it's a JSON string
+    try {
+      if (typeof raw === "string") specs = JSON.parse(raw);
+    } catch (e) {
+      console.warn("Bad specifications JSON:", raw, e);
+      return [];
+    }
+
+    // 2) Normalize to [label, value] pairs
+    if (Array.isArray(specs)) {
+      // [{ key, value }]
+      return specs
+        .filter((s) => s && typeof s === "object")
+        .map((s: any, i: number) => [
+          String(s.key ?? `Spec ${i + 1}`),
+          String(s.value ?? ""),
+        ])
+        .filter(([k, v]) => k || v);
+    }
+
+    if (specs && typeof specs === "object") {
+      // { label: value }
+      return Object.entries(specs).map(([k, v]) => [String(k), String(v ?? "")]);
+    }
+
+    return [];
+  }, [product.specifications]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -219,44 +252,11 @@ export default function ProductDetail() {
                     <CardTitle>Specifications</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {/* <dl className="space-y-3">
-                      {Object.entries(product.specifications ?? {}).map(([key, value]) => (
-
-                        <div key={key} className="flex justify-between border-b border-border pb-2 last:border-b-0">
-                          <dt className="font-medium text-foreground">{key}</dt>
-                          <dd className="text-muted-foreground">{value}</dd>
-                        </div>
-                      ))}
-                    </dl> */}
-                    <dl className="space-y-3">
-                      {(() => {
-                        const specs = product.specifications;
-
-                        // Normalize to [label, value] pairs
-                        let pairs: Array<[string, string]> = [];
-
-                        if (Array.isArray(specs)) {
-                          // Backend sends: [{ key: string, value: string }]
-                          pairs = specs
-                            .filter((s: any) => s && typeof s === "object")
-                            .map((s: any, idx: number) => [
-                              String(s.key ?? `Spec ${idx + 1}`),
-                              String(s.value ?? ""),
-                            ]);
-                        } else if (specs && typeof specs === "object") {
-                          // Backend sends: { label: value, ... }
-                          pairs = Object.entries(specs).map(([k, v]) => [String(k), String(v ?? "")]);
-                        }
-
-                        if (pairs.length === 0) {
-                          return (
-                            <p className="text-sm text-muted-foreground">
-                              No specifications provided.
-                            </p>
-                          );
-                        }
-
-                        return pairs.map(([label, val], i) => (
+                    {specPairs.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No specifications provided.</p>
+                    ) : (
+                      <dl className="space-y-3">
+                        {specPairs.map(([label, val], i) => (
                           <div
                             key={`${label}-${i}`}
                             className="flex justify-between border-b border-border pb-2 last:border-b-0"
@@ -264,11 +264,12 @@ export default function ProductDetail() {
                             <dt className="font-medium text-foreground">{label}</dt>
                             <dd className="text-muted-foreground">{val}</dd>
                           </div>
-                        ));
-                      })()}
-                    </dl>
+                        ))}
+                      </dl>
+                    )}
                   </CardContent>
                 </Card>
+
                 {/* Tags */}
                 {product.tags && product.tags.length > 0 && (
                   <Card>

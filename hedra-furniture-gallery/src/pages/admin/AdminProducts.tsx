@@ -146,7 +146,19 @@ const handleViewProduct = (productId: string) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredProducts.map((product) => (
               <Card key={product.id} className="overflow-hidden hover:shadow-card transition-all duration-300 group">
-                <div className="aspect-[4/3] overflow-hidden relative">
+                  <div
+                  className="aspect-[4/3] overflow-hidden relative cursor-pointer"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open ${product.name}`}
+                  onClick={() => handleViewProduct(product.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleViewProduct(product.id);
+                    }
+                  }}
+                >
                   <img
                     src={product.images[0]}
                     alt={product.name}
@@ -160,11 +172,7 @@ const handleViewProduct = (productId: string) => {
                       </Badge>
                     </div>
                   )}
-                  <div className="absolute top-2 right-2">
-                   <Button variant="secondary" size="sm" onClick={() => handleViewProduct(product.id)}>
-  <Eye className="h-4 w-4" />
-</Button>
-                  </div>
+                 
                 </div>
                 
                 <CardContent className="p-4">

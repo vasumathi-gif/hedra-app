@@ -31,6 +31,7 @@ model Product {
   price       Float
   imageUrl    String
   specifications Json? 
+  bestSeller     Boolean  @default(false)
   createdAt   DateTime @default(now())
 }
 
@@ -49,4 +50,21 @@ model ContactMessage {
   phone     String
   message   String
   createdAt DateTime @default(now())
+}
+
+enum CatalogueType {
+  CHAIR_CATALOGUE
+  UPHOLSTERY
+  BRAND_LOGO
+}
+
+model Catalogue {
+  id           String        @id @default(uuid())
+  code         String        @unique        // e.g. CT001, CT002 ...
+  type         CatalogueType
+  name         String
+  imageUrl     String                     // cover/swatch/logo image
+  pdfUrl       String?                    // brochure/spec (not required for BRAND_LOGO)
+  brandLogoUrl String?                    // optional brand logo image
+  createdAt    DateTime      @default(now())
 }

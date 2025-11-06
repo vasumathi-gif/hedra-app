@@ -23,6 +23,10 @@ export default function AddProduct() {
   const token = JSON.parse(localStorage.getItem('adminUser') || '{}')?.token;
 
 
+  // replace images: [] as string[] with two states
+const [images, setImages] = useState<File[]>([]);
+const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+
 
 
   const [formData, setFormData] = useState({
@@ -86,65 +90,65 @@ export default function AddProduct() {
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      // In a real application, you would upload these files to a server or cloud storage
-      // For demo purposes, we'll create temporary URLs
-      const imageUrls = Array.from(files).map(file => URL.createObjectURL(file));
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, ...imageUrls]
-      }));
-    }
-  };
+  const files = e.target.files;
+  if (!files || !files.length) return;
 
-  const removeImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }));
-  };
+  const newFiles = Array.from(files);
+  setImages(prev => [...prev, ...newFiles]);
+
+  // previews for UI
+  const newPreviews = newFiles.map(f => URL.createObjectURL(f));
+  setImagePreviews(prev => [...prev, ...newPreviews]);
+
+  // clear input so same file can be selected again if needed
+  e.currentTarget.value = "";
+};
+
+
+const removeImage = (index: number) => {
+  setImages(prev => prev.filter((_, i) => i !== index));
+  setImagePreviews(prev => {
+    // revoke object URL to avoid memory leak
+    URL.revokeObjectURL(prev[index]);
+    return prev.filter((_, i) => i !== index);
+  });
+};
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setIsSubmitting(true);
 
   try {
+    // Basic validations
     if (!formData.name.trim()) throw new Error('Product name is required');
     if (!formData.description.trim()) throw new Error('Product description is required');
     if (!formData.category) throw new Error('Product category is required');
     if (!formData.price || isNaN(Number(formData.price))) throw new Error('Valid price is required');
+    if (!images.length) throw new Error('Please upload at least one image.');
 
-    // Prepare specifications
- const specsArray = specifications
-  .filter(spec => spec.key.trim() && spec.value.trim())
-  .map(spec => ({ key: spec.key.trim(), value: spec.value.trim() }));
+    // ✅ Build specsArray from UI state
+    const specsArray = specifications
+      .filter(s => s.key.trim() && s.value.trim())
+      .map(s => ({ key: s.key.trim(), value: s.value.trim() }));
 
-
-
-
-    // Prepare tags
+    // ✅ Build tagsArray from comma-separated string
     const tagsArray = formData.tags
       .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag.length > 0);
+      .map(t => t.trim())
+      .filter(Boolean);
 
-    // Prepare FormData
+    // ✅ Build payload
     const payload = new FormData();
     payload.append('name', formData.name);
     payload.append('description', formData.description);
     payload.append('category', formData.category);
-    payload.append('price', formData.price); // ✅
-    payload.append('tags', JSON.stringify(tagsArray)); // ✅
+    payload.append('price', String(formData.price));
+    payload.append('tags', JSON.stringify(tagsArray));
     payload.append('specifications', JSON.stringify(specsArray));
     payload.append('featured', String(formData.featured));
 
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    if (fileInput?.files?.length) {
-      payload.append('image', fileInput.files[0]);
-    } else {
-      throw new Error('Please upload at least one image.');
-    }
+    // ✅ Append all files with the SAME key "images"
+    images.forEach(file => payload.append('images', file));
 
     const result = await apiPostRequest('products/saveProduct', payload);
 
@@ -165,6 +169,8 @@ const handleSubmit = async (e: React.FormEvent) => {
     setIsSubmitting(false);
   }
 };
+
+
 
 
 
@@ -260,14 +266,14 @@ const handleSubmit = async (e: React.FormEvent) => {
 </div>
 
 
-                  <div className="flex items-center space-x-2">
+                  {/* <div className="flex items-center space-x-2">
                     <Switch
                       id="featured"
                       checked={formData.featured}
                       onCheckedChange={handleFeaturedChange}
                     />
                     <Label htmlFor="featured">Featured Product</Label>
-                  </div>
+                  </div> */}
                 </CardContent>
               </Card>
 
@@ -329,42 +335,45 @@ const handleSubmit = async (e: React.FormEvent) => {
                           <p className="text-sm text-muted-foreground">Click to upload images</p>
                         </div>
                         <input
-                          type="file"
-                          className="hidden"
-                          multiple
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                        />
+  type="file"
+  className="hidden"
+  multiple
+  accept="image/*"
+  onChange={handleImageUpload}
+/>
+
                       </label>
                     </div>
                   </div>
 
                   {/* Image Preview */}
-                  {formData.images.length > 0 && (
-                    <div className="space-y-2">
-                      <Label>Uploaded Images</Label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {formData.images.map((image, index) => (
-                          <div key={index} className="relative group">
-                            <img
-                              src={image}
-                              alt={`Product ${index + 1}`}
-                              className="w-full h-20 object-cover rounded-md"
-                            />
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                              onClick={() => removeImage(index)}
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                      {/* Image Preview */}
+    {imagePreviews.length > 0 && (
+      <div className="space-y-2">
+        <Label>Uploaded Images</Label>
+        <div className="grid grid-cols-2 gap-2">
+          {imagePreviews.map((src, index) => (
+            <div key={index} className="relative group">
+              <img
+                src={src}
+                alt={`Product ${index + 1}`}
+                className="w-full h-20 object-cover rounded-md"
+              />
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={() => removeImage(index)}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
                 </CardContent>
               </Card>
 

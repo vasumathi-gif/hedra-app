@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { useNavigate,useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Search, Filter, Grid3X3, List, Download } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -12,6 +12,8 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { useProducts } from '@/contexts/ProductContext';
 import { PRODUCT_CATEGORIES, ProductCategory } from '@/types/product';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function Catalog() {
@@ -21,6 +23,32 @@ export default function Catalog() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | 'all'>(category || 'all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerTitle, setViewerTitle] = useState<string>('');
+  const [viewerProducts, setViewerProducts] = useState<typeof products>([]);
+  const openCategoryViewer = (title: string, items: typeof products) => {
+    setViewerTitle(title);
+    setViewerProducts(items);
+    setViewerOpen(true);
+  };
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState(0);
+
+  const openPreview = (index: number) => {
+    setPreviewIndex(index);
+    setPreviewOpen(true);
+  };
+
+  const nextPreview = () => {
+    setPreviewIndex((i) => (i + 1) % viewerProducts.length);
+  };
+  const prevPreview = () => {
+    setPreviewIndex((i) => (i - 1 + viewerProducts.length) % viewerProducts.length);
+  };
+
+  const active = viewerProducts[previewIndex];
+
+
 
   const catalogRef = useRef<HTMLDivElement>(null);
 
@@ -84,11 +112,176 @@ export default function Catalog() {
     navigate("/product", { state: { id: productId } });
   };
 
+  // Try common field names for a product's PDF URL.
+  // Adjust to your real field (catalogPdf / brochureUrl / pdfUrl / documentUrl, etc.)
+  // If you have a static brochure file in /public/brochures/LENKA.pdf:
+  const getPdfUrl = (p: any) =>
+    p?.catalogPdf || p?.brochureUrl || p?.pdfUrl || p?.documentUrl || "/brochures/LENKA.pdf";
+
+
+  // Opens a PDF in a new tab (preview). Falls back gracefully if blocked.
+  const openPdfPreview = (e: React.MouseEvent, url?: string | null) => {
+    e.stopPropagation();            // don't trigger the card's onClick (navigate)
+    if (!url) {
+      alert("No PDF available for this item yet.");
+      return;
+    }
+    const w = window.open(url, "_blank", "noopener,noreferrer");
+    if (!w) {
+      // popup blocked → navigate current tab as a fallback
+      window.location.href = url;
+    }
+  };
+
+
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
 
       <main className="flex-1">
+        {/* Category Viewer */}
+        <Dialog open={viewerOpen} onOpenChange={setViewerOpen}>
+          <DialogContent className="max-w-6xl w-[96vw] p-0 overflow-hidden">
+            <div className="sticky top-0 z-10 bg-white border-b px-6 py-4 flex items-center justify-between">
+              <div>
+                <DialogTitle className="text-xl font-semibold">{viewerTitle}</DialogTitle>
+                <p className="text-sm text-muted-foreground">
+                  {viewerProducts.length} item{viewerProducts.length > 1 ? 's' : ''} in this category
+                </p>
+              </div>
+              <button className="p-2 rounded hover:bg-muted" onClick={() => setViewerOpen(false)}>
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Grid of products in this category */}
+            <div className="p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {viewerProducts.map((p, idx) => (
+                  <Card
+                    key={p.id}
+                    className="overflow-hidden hover:shadow-card transition-all duration-300 cursor-pointer"
+                    onClick={() => openPreview(idx)}   // 👈 open preview for clicked product
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden group">
+                      <img
+                        src={Array.isArray(p.images) && p.images.length ? p.images[0] : '/placeholder.jpg'}
+                        alt={p.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <h3 className="font-semibold text-foreground line-clamp-1">{p.name}</h3>
+                          <p className="text-xs text-muted-foreground capitalize">{p.category.replace('-', ' ')}</p>
+                        </div>
+                        {p.featured && (
+                          <span className="text-[10px] font-medium text-yellow-700 bg-yellow-100 px-2 py-0.5 rounded">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="mt-3 flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openPdfPreview(e, getPdfUrl(p));
+                          }}
+                        >
+                          <Download className="h-4 w-4 mr-1" />
+                          Brochure
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setViewerOpen(false);
+                            handleViewProduct(p.id);
+                          }}
+                        >
+                          View
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        {/* Image Preview (Lightbox) */}
+        <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+          <DialogContent className="max-w-[1000px] w-[96vw] p-0 overflow-hidden">
+            {active && (
+              <div className="relative bg-black/90 text-white">
+                {/* header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+                  <div className="min-w-0">
+                    <p className="text-sm opacity-70">{viewerTitle}</p>
+                    <h3 className="text-lg font-semibold truncate">{active.name}</h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button variant="secondary" size="sm" onClick={() => { setPreviewOpen(false); handleViewProduct(active.id); }}>
+                      View product
+                    </Button>
+                    <button className="p-2 rounded hover:bg-white/10" onClick={() => setPreviewOpen(false)}>
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* main image area */}
+                <div className="relative">
+                  <button className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/10 hover:bg-white/20"
+                    onClick={prevPreview}>
+                    <ChevronLeft className="h-6 w-6" />
+                  </button>
+
+                  <div className="aspect-[4/3] grid place-items-center">
+                    <img
+                      src={(Array.isArray(active.images) && active.images.length ? active.images[0] : '/placeholder.jpg')}
+                      alt={active.name}
+                      className="max-h-[70vh] object-contain"
+                    />
+                  </div>
+
+                  <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/10 hover:bg-white/20"
+                    onClick={nextPreview}>
+                    <ChevronRight className="h-6 w-6" />
+                  </button>
+                </div>
+
+                {/* thumbnails row */}
+                <div className="p-4 bg-black/80 overflow-x-auto">
+                  <div className="flex gap-3">
+                    {viewerProducts.map((p, i) => (
+                      <button
+                        key={p.id}
+                        onClick={() => setPreviewIndex(i)}
+                        className={`shrink-0 border rounded-md overflow-hidden ${i === previewIndex ? 'border-white' : 'border-white/20'}`}
+                        title={p.name}
+                      >
+                        <img
+                          src={Array.isArray(p.images) && p.images.length ? p.images[0] : '/placeholder.jpg'}
+                          alt={p.name}
+                          className="h-16 w-24 object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+
         <section className="bg-muted/30 py-12">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -151,10 +344,10 @@ export default function Catalog() {
                   </Button>
                 </div>
 
-                <Button variant="outline" size="sm" onClick={handleDownload}>
+                {/* <Button variant="outline" size="sm" onClick={handleDownload}>
                   <Download className="h-4 w-4 mr-2" />
                   Download PDF
-                </Button>
+                </Button> */}
               </div>
             </div>
 
@@ -190,17 +383,52 @@ export default function Catalog() {
                   {groupedByCategory.map(([categoryKey, categoryProducts]) => {
                     const firstProduct = categoryProducts[0];
                     return (
-                      <div key={firstProduct.id} onClick={() => handleViewProduct(firstProduct.id)}>
+                      <div
+                        key={firstProduct.id}
+                        onClick={() => navigate(`/catalog/${encodeURIComponent(categoryKey)}/browse`)}
+                        className="cursor-pointer"
+                      >
+
                         <Card className="overflow-hidden hover:shadow-card transition-all duration-300">
-                          <div className="aspect-[4/3] overflow-hidden">
+                          <div className="relative aspect-[4/3] overflow-hidden group">
                             <img
-                              src={Array.isArray(firstProduct.images) && firstProduct.images.length > 0
-                                ? firstProduct.images[0]
-                                : '/placeholder.jpg'}
+                              src={
+                                Array.isArray(firstProduct.images) && firstProduct.images.length > 0
+                                  ? firstProduct.images[0]
+                                  : '/placeholder.jpg'
+                              }
                               alt={firstProduct.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
+
+                            {/* optional hover overlay for contrast */}
+                            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                            {/* Download button ON the image */}
+                            {/* Download button ON the image (actually opens preview) */}
+                            <button
+                              onClick={(e) => openPdfPreview(e, getPdfUrl(firstProduct))}
+                              aria-label="Open catalog PDF"
+                              className="
+    absolute left-3 bottom-3 inline-flex items-center gap-2 px-3 py-2 rounded-md
+    text-white text-sm font-semibold
+    bg-gradient-to-b from-[#6b1d1d] to-[#1c0b0b]
+    shadow-[inset_0_1px_0_rgba(255,255,255,.15),0_8px_16px_rgba(0,0,0,.35)]
+    hover:from-[#7f2323] hover:to-[#0f0707]
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black/30
+    active:translate-y-px backdrop-blur-sm transition-all
+  "
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                  d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
+                              </svg>
+                              Download
+                            </button>
+
+
                           </div>
+
                           <CardContent className="p-4 text-center">
                             <h3 className="font-semibold text-foreground mb-2 capitalize">
                               {categoryKey.replace('-', ' ')}
@@ -210,6 +438,7 @@ export default function Catalog() {
                             </p>
                           </CardContent>
                         </Card>
+
                       </div>
                     );
                   })}

@@ -1,55 +1,98 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState } from "react";
+import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { useToast } from "@/hooks/use-toast";
+import { apiPostRequest } from "../../service"; // <-- make sure this path matches where you put apiPostRequest
 
 export default function Contact() {
   const { toast } = useToast();
+  const [submitting, setSubmitting] = useState(false);
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real application, you would send this data to your backend
-    console.log('Form submitted:', formData);
-    
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for your inquiry. We'll get back to you within 24 hours.",
-    });
 
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: ''
-    });
+    // basic front-end guard (backend still validates)
+    if (!formData.name || !formData.email || !formData.message) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill name, email and message.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      // If your backend only stores name/email/phone/message,
+      // you can either send subject as-is (backend can ignore),
+      // or append it to message:
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message:
+          formData.subject?.trim()?.length
+            ? `[Subject: ${formData.subject}]\n\n${formData.message}`
+            : formData.message,
+        subject: formData.subject, // optional (backend may ignore)
+      };
+
+      // POST /api/createcontact (because API_BASE_URL ends with /api/)
+      const res = await apiPostRequest("contact/createcontact", payload);
+
+      // success shape could be { ok: true, data } or { message: "Message submitted successfully" }
+      const desc =
+        res?.message ||
+        res?.data?.message ||
+        "Thank you for your inquiry. We'll get back to you within 24 hours.";
+      toast({ title: "Message Sent!", description: desc });
+
+      // reset on success
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+    } catch (err: any) {
+      const apiMsg =
+        err?.response?.data?.error ||
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to send message";
+      toast({
+        title: "Couldn’t send your message",
+        description: apiMsg,
+        variant: "destructive",
+      });
+      console.error("createcontact error:", err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1">
         {/* Page Header */}
         <section className="bg-muted/30 py-16">
@@ -59,7 +102,7 @@ export default function Contact() {
                 Contact Us
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Ready to start your furniture project? Get in touch with our team for a consultation, 
+                Ready to start your furniture project? Get in touch with our team for a consultation,
                 quote, or any questions about our products and services.
               </p>
             </div>
@@ -98,7 +141,7 @@ export default function Contact() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-foreground mb-1">Email</h3>
-                        <p className="text-muted-foreground">info@hedrafabrications.com</p>
+                        <p className="text-muted-foreground">info@edendek.com</p>
                         <p className="text-sm text-muted-foreground">We'll respond within 24 hours</p>
                       </div>
                     </div>
@@ -110,9 +153,9 @@ export default function Contact() {
                       <div>
                         <h3 className="font-semibold text-foreground mb-1">Address</h3>
                         <p className="text-muted-foreground">
-                          123 Furniture Street<br />
-                          Design City, DC 12345<br />
-                          United States
+                          No: 126/1, Sivanthi Athithan Nagar,<br />
+                          Ambedkar Main Road,Redhills,<br />
+                          Chennai,Tamil Nadu: 600 052
                         </p>
                       </div>
                     </div>
@@ -191,13 +234,12 @@ export default function Contact() {
 
                         <div>
                           <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-2">
-                            Subject *
+                            Subject
                           </label>
                           <Input
                             id="subject"
                             name="subject"
                             type="text"
-                            required
                             value={formData.subject}
                             onChange={handleInputChange}
                             placeholder="What is this regarding?"
@@ -221,8 +263,14 @@ export default function Contact() {
                       </div>
 
                       <div>
-                        <Button type="submit" variant="hero" size="lg" className="w-full md:w-auto">
-                          Send Message
+                        <Button
+                          type="submit"
+                          variant="hero"
+                          size="lg"
+                          className="w-full md:w-auto"
+                          disabled={submitting}
+                        >
+                          {submitting ? "Sending..." : "Send Message"}
                           <Send className="ml-2 h-5 w-5" />
                         </Button>
                       </div>
@@ -243,7 +291,7 @@ export default function Contact() {
                 Come see our craftsmanship firsthand at our showroom and workshop.
               </p>
             </div>
-            
+
             <div className="aspect-[21/9] rounded-lg overflow-hidden bg-muted">
               <div className="w-full h-full flex items-center justify-center">
                 <div className="text-center">
@@ -258,7 +306,7 @@ export default function Contact() {
           </div>
         </section>
       </main>
-      
+
       <Footer />
     </div>
   );

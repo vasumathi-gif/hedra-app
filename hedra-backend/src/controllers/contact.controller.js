@@ -1,5 +1,41 @@
 import prisma from '../config/db.js';
-import { sendMail } from '../services/emailService.js';
+// import { sendMail } from '../services/emailService.js';
+
+ import {sendAdminContactEmail} from '../services/emailService.js'
+
+export const createContactMessage = async (req, res) => {
+  try {
+    const { name, email, phone, message } = req.body || {};
+    if (!name || !email || !phone || !message) {
+      return res
+        .status(400)
+        .json({ ok: false, error: "name, email, phone, message are required" });
+    }
+
+    // 1) Save in DB
+    const saved = await prisma.contactMessage.create({
+      data: { name, email, phone, message },
+    });
+
+    // 2) Figure out recipient & send email
+    const mailedTo = process.env.ADMIN_EMAIL || process.env.GMAIL_USER;
+
+    await sendAdminContactEmail({ name, email, phone, message });
+
+    // 3) Return a richer response
+    return res.status(201).json({
+      ok: true,
+      message: "Message submitted successfully",
+      mailedTo,        // 👈 which inbox received it
+      data: saved,     // 👈 the saved DB record
+    });
+  } catch (err) {
+    console.error("createContactMessage error:", err);
+    return res.status(500).json({ ok: false, error: "Internal server error" });
+  }
+}
+
+
 
 export const submitContact = async (req, res) => {
   const { name, email, phone, message } = req.body;
