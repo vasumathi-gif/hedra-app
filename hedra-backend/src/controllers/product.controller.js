@@ -113,9 +113,14 @@ export const createProduct = async (req, res) => {
     });
 
     return res.status(201).json(product);
-  } catch (err) {
-    console.error("createProduct error:", err);
-    return res.status(500).json({ message: "Failed to create product" });
+  }catch (error) {
+    console.error('SaveProduct error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create product',
+      error: error instanceof Error ? error.message : String(error),
+      stack: error.stack, // optional: show stack trace in dev
+    });
   }
 };
 
