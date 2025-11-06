@@ -74,6 +74,7 @@ import productRoutes from './routes/product.routes.js';
 import projectRoutes from './routes/project.routes.js';
 import contactRoutes from './routes/contact.routes.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import catalogueRoutes from './routes/catalogue.routes.js'
 
 dotenv.config();
 
@@ -115,6 +116,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/catalogue',catalogueRoutes)
 
 // ✅ 5. Error handler
 app.use(errorHandler);
