@@ -1,63 +1,3 @@
-// import express from 'express';
-// import cors from 'cors';
-// import path from 'path';
-// import dotenv from 'dotenv';
-// import helmet from 'helmet';
-// import morgan from 'morgan';
-// import { fileURLToPath } from 'url';
-
-// import authRoutes from './routes/auth.routes.js';
-// import productRoutes from './routes/product.routes.js';
-// import projectRoutes from './routes/project.routes.js';
-// import contactRoutes from './routes/contact.routes.js';
-// import { errorHandler } from './middlewares/errorHandler.js';
-// import catalogueRoutes from './routes/catalogue.routes.js'
-
-// dotenv.config();
-
-// const app = express();
-
-// // Allow __dirname in ES modules
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-
-// // ✅ 1. Allow all localhost frontend ports (8080, 5173, etc.)
-// app.use(cors({
-//   origin: (origin, callback) => {
-//     if (!origin || origin.startsWith('http://localhost')) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-// }));
-
-// // ✅ 2. Serve static image files with proper CORS headers
-// app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), {
-//   setHeaders: (res) => {
-//     res.setHeader('Access-Control-Allow-Origin', '*'); // Or 'http://localhost:8080'
-//     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-//   }
-// }));
-
-// // ✅ 3. General Middleware
-// app.use(helmet());
-// app.use(morgan('dev'));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-
-// // ✅ 4. API Routes
-// app.use('/api/auth', authRoutes);
-// app.use('/api/products', productRoutes);
-// app.use('/api/projects', projectRoutes);
-// app.use('/api/contact', contactRoutes);
-// app.use('/api/catalogue',catalogueRoutes)
-
-// // ✅ 5. Error handler
-// app.use(errorHandler);
-
-// export default app;
 
 
 
@@ -83,40 +23,50 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ 1. Allow all localhost frontend ports (8080, 5173, etc.)
+// CORS configuration - allow specific origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://hedra-frontend.onrender.com',
+];
+
 app.use(cors({
-  origin: [
-    'http://localhost:5173',       // local dev (Vite)
-    'http://localhost:3000',       // local dev (React default)
-    'https://hedra-frontend.onrender.com'  // ✅ your Render frontend
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: (origin, callback) => {
+    // allow requests with no origin like mobile apps or curl
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true,
 }));
 
+// Handle preflight OPTIONS requests for all routes
+app.options('*', cors());
 
-// ✅ 2. Serve static image files with proper CORS headers
+// Serve static files with CORS headers
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   setHeaders: (res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Or 'http://localhost:8080'
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   }
 }));
 
-// ✅ 3. General Middleware
+// General middleware
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ 4. API Routes
+// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
 
-// ✅ 5. Error handler
+// Error handler middleware (make sure errorHandler is properly implemented)
 app.use(errorHandler);
 
 export default app;
