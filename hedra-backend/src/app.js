@@ -88,7 +88,7 @@ const __dirname = path.dirname(__filename);
 app.use(cors({
   origin: [
     'http://localhost:5173',       // local dev (Vite)
-    'http://localhost:3000',       // local dev (React default)
+    'http://localhost:8080',       // local dev (React default)
     'https://hedra-frontend.onrender.com'  // ✅ your Render frontend
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -98,7 +98,7 @@ app.use(cors({
 
 
 // ✅ 2. Serve static image files with proper CORS headers
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), {
   setHeaders: (res) => {
     res.setHeader('Access-Control-Allow-Origin', '*'); // Or 'http://localhost:8080'
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
