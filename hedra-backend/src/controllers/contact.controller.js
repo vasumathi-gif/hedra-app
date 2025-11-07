@@ -20,7 +20,21 @@ export const createContactMessage = async (req, res) => {
     // 2) Figure out recipient & send email
     const mailedTo = process.env.ADMIN_EMAIL || process.env.GMAIL_USER;
 
-    await sendAdminContactEmail({ name, email, phone, message });
+     try {
+      const info = await sendAdminContactEmail({ name, email, phone, message });
+      console.log("sendAdminContactEmail success:", info && info.messageId ? info.messageId : info);
+    } catch (mailErr) {
+      // Full stack logged so Render logs show root cause
+      console.error("sendAdminContactEmail failed (non-fatal):", mailErr && (mailErr.stack || mailErr));
+      // Return success for saved data but include mailError info
+      return res.status(201).json({
+        ok: true,
+        message: "Message saved, but sending email to admin failed.",
+        data: saved,
+        mailedTo,
+        mailError: mailErr && (mailErr.message || String(mailErr)),
+      });
+    }
 
     // 3) Return a richer response
     return res.status(201).json({
@@ -30,7 +44,7 @@ export const createContactMessage = async (req, res) => {
       data: saved,     // 👈 the saved DB record
     });
   } catch (err) {
-      console.error("Mailer verify failed:", err && err.message ? err.message : err);
+       console.error("createContactMessage error:", err && (err.stack || err));
     return res.status(500).json({ ok: false, error: "Internal server error" });
   }
 }
