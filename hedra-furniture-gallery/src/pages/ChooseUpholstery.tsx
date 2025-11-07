@@ -46,6 +46,7 @@ export default function ChooseUpholstery() {
       try {
         const token = localStorage.getItem("token");
         const res = await apiGetRequest("catalogue/listCatalogues?type=UPHOLSTERY", token);
+        console.log(res)
 
         if (Array.isArray(res?.items)) {
           setFabrics(res.items);
@@ -125,7 +126,7 @@ export default function ChooseUpholstery() {
 const pdfHref = fabric.pdfUrl
   ? fabric.pdfUrl.startsWith("http")
     ? fabric.pdfUrl
-    : `https://hedra-app-2.onrender.com${fabric.pdfUrl.startsWith("/") ? "" : "/"}${fabric.pdfUrl}`
+    : `https://hedra-app-2.onrender.com${fabric.pdfUrl.startsWith("/") ? "" : "/"}${fabric.pdfUrl.replace(/^\/api\/uploads\//, "/uploads/")}`
   : undefined;
                   return (
                     <Card key={fabric.id} className="relative overflow-hidden group shadow-md rounded-md">
