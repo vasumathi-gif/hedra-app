@@ -104,12 +104,14 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), {
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   }
 }));
+app.use('/api/uploads', express.static(path.join(__dirname, 'hedra-backend/uploads')));
 
 // ✅ 3. General Middleware
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 // ✅ 4. API Routes
 app.use('/api/auth', authRoutes);
