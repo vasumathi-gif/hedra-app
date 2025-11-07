@@ -23,10 +23,15 @@
 import nodemailer from "nodemailer";
 
 export const mailer = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // ✅ important for Render
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASSWORD,
+  },
+  tls: {
+    rejectUnauthorized: false, // ✅ prevents Render SSL block
   },
 });
 

@@ -119,9 +119,14 @@ export default function ChooseUpholstery() {
                     imagesByBase[fabric.name ?? ""] ||
                     imagesByBase["lenka"];
                   const hoverImage = imagesByBase[`${fabric.name}-hover`] ?? undefined;
-                  const pdfHref = fabric.pdfUrl?.startsWith("http")
-                    ? fabric.pdfUrl
-                    : `${fabric.pdfUrl}`;
+                  const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://hedra-app-2.onrender.com";
+
+                  const pdfHref = fabric.pdfUrl
+                    ? (fabric.pdfUrl.startsWith("http") ? fabric.pdfUrl
+                      : fabric.pdfUrl.startsWith("/") ? `${API_BASE}${fabric.pdfUrl}`
+                        : `${API_BASE}/${fabric.pdfUrl}`)
+                    : undefined;
+
 
                   return (
                     <Card key={fabric.id} className="relative overflow-hidden group shadow-md rounded-md">

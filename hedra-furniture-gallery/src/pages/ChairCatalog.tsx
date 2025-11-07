@@ -122,9 +122,14 @@ export default function ChairCatalog() {
                     imagesByBase[`${chair.name}-hover`] ??
                     imagesByBase["sofa1"] ??
                     undefined;
-                  const pdfHref = chair.pdfUrl?.startsWith("http")
-                    ? chair.pdfUrl
-                    : `${BASE_URL}${chair.pdfUrl || ""}`;
+                  const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://hedra-app-2.onrender.com";
+
+                  const pdfHref = chair.pdfUrl
+                    ? (chair.pdfUrl.startsWith("http") ? chair.pdfUrl
+                      : chair.pdfUrl.startsWith("/") ? `${API_BASE}${chair.pdfUrl}`
+                        : `${API_BASE}/${chair.pdfUrl}`)
+                    : undefined;
+
 
                   return (
                     <Card
