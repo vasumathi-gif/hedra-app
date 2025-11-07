@@ -30,7 +30,7 @@ export const createContactMessage = async (req, res) => {
       data: saved,     // 👈 the saved DB record
     });
   } catch (err) {
-    console.error("createContactMessage error:", err);
+      console.error("Mailer verify failed:", err && err.message ? err.message : err);
     return res.status(500).json({ ok: false, error: "Internal server error" });
   }
 }
