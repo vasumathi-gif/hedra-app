@@ -23,16 +23,19 @@
 import nodemailer from "nodemailer";
 
 export const mailer = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // ✅ important for Render
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: Number(process.env.SMTP_PORT) || 465,   // try 465
+  secure: true,                                 // SSL
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASSWORD,
   },
   tls: {
-    rejectUnauthorized: false, // ✅ prevents Render SSL block
+    rejectUnauthorized: false,
   },
+  connectionTimeout: 30_000, // 30 seconds
+  greetingTimeout: 30_000,
+  socketTimeout: 30_000,
 });
 
 export async function sendAdminContactEmail(data) {
