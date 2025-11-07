@@ -7,12 +7,12 @@ import fs from "fs";
 // export default upload;
 export const upload = multer({
   storage: multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "uploads/"),
+    destination: (req, file, cb) => cb(null, '/uploads/catalogue/pdfs'),
     filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname);
-      cb(null, `product-${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`);
-    },
-  }),
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+}),
   fileFilter: (req, file, cb) => {
     const allowed = ["image/jpeg", "image/png", "image/webp"];
     cb(null, allowed.includes(file.mimetype));
