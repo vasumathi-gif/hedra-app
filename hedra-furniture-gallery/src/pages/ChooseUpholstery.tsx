@@ -122,9 +122,11 @@ export default function ChooseUpholstery() {
                   const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://hedra-app-2.onrender.com";
 
                  // In your component
-const pdfHref = `https://hedra-app-2.onrender.com${fabric.pdfUrl}`;
-
-
+const pdfHref = fabric.pdfUrl
+  ? fabric.pdfUrl.startsWith("http")
+    ? fabric.pdfUrl
+    : `https://hedra-app-2.onrender.com${fabric.pdfUrl.startsWith("/") ? "" : "/"}${fabric.pdfUrl}`
+  : undefined;
                   return (
                     <Card key={fabric.id} className="relative overflow-hidden group shadow-md rounded-md">
                       <div className="relative aspect-[4/3] overflow-hidden">
