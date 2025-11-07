@@ -121,11 +121,17 @@ export default function ChooseUpholstery() {
                   const hoverImage = imagesByBase[`${fabric.name}-hover`] ?? undefined;
                   const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://hedra-app-2.onrender.com";
 
-                  const pdfHref = fabric.pdfUrl
-                    ? (fabric.pdfUrl.startsWith("http") ? fabric.pdfUrl
-                      : fabric.pdfUrl.startsWith("/") ? `${API_BASE}${fabric.pdfUrl}`
-                        : `${API_BASE}/${fabric.pdfUrl}`)
-                    : undefined;
+            const getPdfFilename = (url: string) => {
+  try {
+    return url.split('/').pop() || '';
+  } catch {
+    return '';
+  }
+};
+
+const pdfHref = fabric.pdfUrl
+  ? `${API_BASE}/api/serve-pdf/${getPdfFilename(fabric.pdfUrl)}`
+  : undefined;
 
 
                   return (
