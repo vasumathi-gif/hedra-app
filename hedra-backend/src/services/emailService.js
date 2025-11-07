@@ -54,7 +54,10 @@ export async function sendAdminContactEmail(data) {
     html,
   });
 }
-
+mailer.verify()
+  .then(() => console.log("Mailer verify: SMTP server OK"))
+  .catch(err => console.error("Mailer verify failed:", err && (err.stack || err)));
+  
 function escapeHtml(s = "") {
   return String(s)
     .replace(/&/g, "&amp;")
