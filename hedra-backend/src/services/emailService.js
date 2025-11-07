@@ -46,18 +46,26 @@ export async function sendAdminContactEmail(data) {
     </div>
   `;
 
-  await mailer.sendMail({
-    from: process.env.GMAIL_USER,
-    to: process.env.ADMIN_EMAIL || process.env.GMAIL_USER,
-    replyTo: data.email,
-    subject: `New contact message from ${data.name}`,
-    html,
-  });
+  try {
+    const info = await mailer.sendMail({
+      from: process.env.GMAIL_USER,
+      to: process.env.ADMIN_EMAIL || process.env.GMAIL_USER,
+      replyTo: data.email,
+      subject: `New contact message from ${data.name}`,
+      html,
+    });
+    console.log("mailer.sendMail info:", info && info.messageId ? info.messageId : info);
+    return info;
+  } catch (err) {
+    // Log the full error and rethrow so the controller can handle it non-fatally
+    console.error("mailer.sendMail error:", err && (err.stack || err));
+    throw err;
+  }
 }
 mailer.verify()
   .then(() => console.log("Mailer verify: SMTP server OK"))
   .catch(err => console.error("Mailer verify failed:", err && (err.stack || err)));
-  
+
 function escapeHtml(s = "") {
   return String(s)
     .replace(/&/g, "&amp;")
