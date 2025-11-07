@@ -98,25 +98,12 @@ app.use(cors({
 
 
 // ✅ 2. Serve static image files with proper CORS headers
-app.use('/uploads', express.static('/uploads', {
-  setHeaders: (res, filepath) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), {
+  setHeaders: (res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Or 'http://localhost:8080'
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-    // Set Content-Type for PDFs to ensure proper rendering/download
-    if (filepath.endsWith('.pdf')) {
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'inline'); // Or 'attachment' for force download
-    }
-  },
-  fallthrough: false, // Prevent 404s from falling through to other routes
-  index: false // No index.html serving
+  }
 }));
-
-// Debug logging for static requests (remove in production)
-app.use('/uploads', (req, res, next) => {
-  console.log(`Static request: ${req.originalUrl}`);
-  next();
-});
 
 
 // ✅ 3. General Middleware
