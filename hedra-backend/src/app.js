@@ -67,6 +67,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 import authRoutes from './routes/auth.routes.js';
@@ -97,17 +98,33 @@ app.use(cors({
 }));
 
 
-// ✅ 2. Serve static image files with proper CORS headers
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), {
+
+// ✅ Static files for PDFs/images in repo
+const UPLOADS_DIR = path.join(__dirname, '..', 'uploads');
+console.log('Serving /uploads from:', UPLOADS_DIR, 'exists:', fs.existsSync(UPLOADS_DIR));
+
+app.use('/uploads', express.static(UPLOADS_DIR, {
+  maxAge: '7d',
+  etag: true,
+  // keep CORP permissive so PDFs load when embedded from other origins
   setHeaders: (res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Or 'http://localhost:8080'
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-  }
+  },
 }));
 
+// (Optional) quick debug endpoint – remove after verifying prod
+app.get('/__debug/uploads', (req, res) => {
+  fs.promises.readdir(UPLOADS_DIR)
+    .then(items => res.json({ ok: true, dir: UPLOADS_DIR, items }))
+    .catch(err => res.status(500).json({ ok: false, error: String(err) }));
+});
 
-// ✅ 3. General Middleware
-app.use(helmet());
+// ✅ Security / logging / body parsers
+app.use(helmet({
+  // ensure helmet doesn't force same-origin for static assets
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
