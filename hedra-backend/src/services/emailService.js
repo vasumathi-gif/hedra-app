@@ -1,42 +1,11 @@
-// import nodemailer from 'nodemailer';
-// import dotenv from 'dotenv';
-// dotenv.config();
+// services/emailService.js
+import { Resend } from "resend";
 
-// const transporter = nodemailer.createTransport({
-//   host: process.env.SMTP_HOST,
-//   port: process.env.SMTP_PORT,
-//   auth: {
-//     user: process.env.SMTP_USER,
-//     pass: process.env.SMTP_PASS,
-//   },
-// });
+const resendKey = process.env.RESEND_API_KEY;
+const FROM = process.env.FROM_EMAIL || "onboarding@resend.dev";
+const ADMIN = process.env.ADMIN_EMAIL || process.env.GMAIL_USER; // fallback to old env
 
-// export const sendMail = async ({ to, subject, html }) => {
-//   return transporter.sendMail({
-//     from: `"Hedra Fabrications" <${process.env.SMTP_USER}>`,
-//     to,
-//     subject,
-//     html,
-//   });
-// };
-
-import nodemailer from "nodemailer";
-
-export const mailer = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: Number(process.env.SMTP_PORT) || 465,   // try 465
-  secure: true,                                 // SSL
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASSWORD,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-  connectionTimeout: 30_000, // 30 seconds
-  greetingTimeout: 30_000,
-  socketTimeout: 30_000,
-});
+const resend = new Resend(resendKey);
 
 export async function sendAdminContactEmail(data) {
   const html = `
@@ -49,25 +18,23 @@ export async function sendAdminContactEmail(data) {
     </div>
   `;
 
-  try {
-    const info = await mailer.sendMail({
-      from: process.env.GMAIL_USER,
-      to: process.env.ADMIN_EMAIL || process.env.GMAIL_USER,
-      replyTo: data.email,
-      subject: `New contact message from ${data.name}`,
-      html,
-    });
-    console.log("mailer.sendMail info:", info && info.messageId ? info.messageId : info);
-    return info;
-  } catch (err) {
-    // Log the full error and rethrow so the controller can handle it non-fatally
-    console.error("mailer.sendMail error:", err && (err.stack || err));
+  if (!resendKey) {
+    const err = new Error("RESEND_API_KEY missing");
+    err.code = "NO_RESEND_KEY";
     throw err;
   }
+
+  const result = await resend.emails.send({
+    from: `Hedra <${FROM}>`,
+    to: [ADMIN],
+    replyTo: data.email,              // so you can reply to the sender
+    subject: `New contact message from ${data.name}`,
+    html,
+  });
+
+  // result has { id } on success
+  return result;
 }
-mailer.verify()
-  .then(() => console.log("Mailer verify: SMTP server OK"))
-  .catch(err => console.error("Mailer verify failed:", err && (err.stack || err)));
 
 function escapeHtml(s = "") {
   return String(s)
@@ -77,4 +44,3 @@ function escapeHtml(s = "") {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
-
