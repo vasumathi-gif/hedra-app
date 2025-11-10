@@ -168,7 +168,7 @@ export default function About() {
                 </h2>
                 <div className="space-y-5 text-muted-foreground leading-relaxed">
                   <p>
-                    The success of Hedra is wholly attributed to our exceptional team, a
+                    The success of EDENDEK is wholly attributed to our exceptional team, a
                     collective of seasoned professionals with over a decade of invaluable
                     experience in the furniture industry. Their extensive knowledge,
                     refined skills, and wealth of contacts form the backbone of our company.
@@ -177,12 +177,12 @@ export default function About() {
                     This dynamic team brings a wealth of insights, ensuring that every
                     piece crafted is infused with the expertise that only years of
                     hands-on experience can provide. With a network of industry contacts,
-                    they navigate seamlessly, ensuring that Hedra remains at the forefront
+                    they navigate seamlessly, ensuring that EDENDEK remains at the forefront
                     of innovation and excellence.
                   </p>
                   <p>
                     Committed to affordable excellence, our team is the driving force
-                    behind Hedra’s success, shaping a future where quality, craftsmanship,
+                    behind EDENDEK success, shaping a future where quality, craftsmanship,
                     and strong relationships thrive.
                   </p>
                 </div>
