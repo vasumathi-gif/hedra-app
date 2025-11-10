@@ -125,11 +125,10 @@ export default function ChairCatalog() {
                   const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://hedra-app-2.onrender.com";
 
                   const pdfHref = chair.pdfUrl
-                    ? (chair.pdfUrl.startsWith("http") ? chair.pdfUrl
-                      : chair.pdfUrl.startsWith("/") ? `${API_BASE}${chair.pdfUrl}`
-                        : `${API_BASE}/${chair.pdfUrl}`)
+                    ? chair.pdfUrl.startsWith("http")
+                      ? chair.pdfUrl
+                      : `https://hedra-app-2.onrender.com${chair.pdfUrl.startsWith("/") ? "" : "/"}${chair.pdfUrl}`
                     : undefined;
-
 
                   return (
                     <Card

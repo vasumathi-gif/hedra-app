@@ -70,6 +70,7 @@ export default function ChooseUpholstery() {
   const hideOnError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     (e.currentTarget as HTMLImageElement).style.display = "none";
   };
+  
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -122,12 +123,12 @@ export default function ChooseUpholstery() {
                   const hoverImage = imagesByBase[`${fabric.name}-hover`] ?? undefined;
                   const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://hedra-app-2.onrender.com";
 
-                 // In your component
-const pdfHref = fabric.pdfUrl
-  ? fabric.pdfUrl.startsWith("http")
-    ? fabric.pdfUrl
-    : `https://hedra-app-2.onrender.com${fabric.pdfUrl.startsWith("/") ? "" : "/"}${fabric.pdfUrl.replace(/^\/api\/uploads\//, "/uploads/")}`
-  : undefined;
+                  // In your component
+                  const pdfHref = fabric.pdfUrl
+                    ? fabric.pdfUrl.startsWith("http")
+                      ? fabric.pdfUrl
+                      : `https://hedra-app-2.onrender.com${fabric.pdfUrl.startsWith("/") ? "" : "/"}${fabric.pdfUrl.replace(/^\/api\/uploads\//, "/uploads/")}`
+                    : undefined;
                   return (
                     <Card key={fabric.id} className="relative overflow-hidden group shadow-md rounded-md">
                       <div className="relative aspect-[4/3] overflow-hidden">
