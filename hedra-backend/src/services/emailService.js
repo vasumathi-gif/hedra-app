@@ -25,7 +25,7 @@ export async function sendAdminContactEmail(data) {
   }
 
   const result = await resend.emails.send({
-    from: `Hedra <${FROM}>`,
+    from: `EDENDEK <${FROM}>`,
     to: [ADMIN],
     replyTo: data.email,              // so you can reply to the sender
     subject: `New contact message from ${data.name}`,
