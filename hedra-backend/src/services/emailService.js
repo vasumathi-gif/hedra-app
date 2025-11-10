@@ -3,7 +3,7 @@ import { Resend } from "resend";
 
 const resendKey = process.env.RESEND_API_KEY;
 const FROM = process.env.FROM_EMAIL || "onboarding@resend.dev";
-const ADMIN = process.env.ADMIN_EMAIL || process.env.GMAIL_USER; // fallback to old env
+const ADMIN = process.env.ADMIN_MAIL || process.env.GMAIL_USER; // fallback to old env
 
 const resend = new Resend(resendKey);
 
