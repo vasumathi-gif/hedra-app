@@ -18,7 +18,7 @@ export const createContactMessage = async (req, res) => {
     });
 
     // 2) Figure out recipient & send email
-    const mailedTo = process.env.ADMIN_EMAIL || process.env.GMAIL_USER;
+    const mailedTo = process.env.ADMIN_MAIL || process.env.GMAIL_USER;
 
      try {
       const info = await sendAdminContactEmail({ name, email, phone, message });
