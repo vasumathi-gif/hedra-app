@@ -259,7 +259,7 @@ const DesktopUtilities = () => (
   <div className="hidden md:flex items-center gap-4">
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
       <Phone className="h-4 w-4" />
-      <span>+1 (555) 123-4567</span>
+      <span>+91 99624 52447</span>
     </div>
     <Link to="/admin">
       <Button variant="outline" size="sm">Admin</Button>
@@ -528,7 +528,7 @@ export function Header() {
                 </div>
                 <div className="flex items-center space-x-2 px-3 py-2 text-sm text-muted-foreground">
                   <Phone className="h-4 w-4" />
-                  <span>+1 (555) 123-4567</span>
+                  <span>+91 99624 52447</span>
                 </div>
                 <Link to="/admin" className="block px-3 py-2">
                   <Button variant="outline" size="sm" className="w-full">
