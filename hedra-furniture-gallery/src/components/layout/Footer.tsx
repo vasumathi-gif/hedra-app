@@ -63,7 +63,7 @@ export function Footer() {
   <div className="grid grid-cols-[22px,1fr] gap-x-3 gap-y-2 items-start">
     {/* Phone */}
     <Phone className="h-5 w-5 text-primary mt-0.5" />
-    <span className="text-sm text-muted-foreground">+1 (555) 123-4567</span>
+    <span className="text-sm text-muted-foreground">+91 99624 52447</span>
 
     {/* Email */}
     <Mail className="h-5 w-5 text-primary mt-0.5" />
