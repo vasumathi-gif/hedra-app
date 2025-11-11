@@ -351,7 +351,7 @@ export function Header() {
 
             <div className="h-16 flex justify-center items-center">
               <Link to="/" className="flex items-center gap-2">
-               <img src={edendekLogo} alt="Edendek logo" className="block h-12 w-auto" />
+                <img src={edendekLogo} alt="Edendek logo" className="block h-12 w-auto" />
               </Link>
             </div>
 
@@ -504,33 +504,115 @@ export function Header() {
 
         {/* ---------- MOBILE NAV ---------- */}
         {mobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-border">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href || "#"}
-                  className={cn(
-                    "block px-3 py-2 text-base font-medium rounded-md transition-colors",
-                    location.pathname === item.href
-                      ? "text-primary bg-accent"
-                      : "text-muted-foreground hover:text-primary hover:bg-accent"
-                  )}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <div className="border-t border-border pt-4">
-                <div className="flex items-center space-x-2 px-3 py-2 text-sm text-muted-foreground">
-                  <Mail className="h-4 w-4" />
-                  <span>info@edendek.com</span>
-                </div>
-                <div className="flex items-center space-x-2 px-3 py-2 text-sm text-muted-foreground">
-                  <Phone className="h-4 w-4" />
-                  <span>+91 99624 52447</span>
-                </div>
-                <Link to="/admin" className="block px-3 py-2">
+          <div className="md:hidden border-t border-border bg-white shadow-sm">
+            <div className="px-3 py-4 space-y-2">
+              {navigation.map((item, idx) => {
+                // determine if this item is currently open
+                const isOpen = openDropdown === item.name;
+
+                // ----- SIMPLE LINK
+                if (!item.columns && !item.dropdown) {
+                  return (
+                    <Link
+                      key={idx}
+                      to={item.href || "#"}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        "block px-3 py-2 text-base font-medium rounded-md transition-colors",
+                        location.pathname === item.href
+                          ? "text-primary bg-accent"
+                          : "text-muted-foreground hover:text-primary hover:bg-accent"
+                      )}
+                    >
+                      {item.name}
+                    </Link>
+                  );
+                }
+
+                // ----- FURNITURE (MEGA MENU)
+                if (item.columns) {
+                  return (
+                    <div key={idx}>
+                      <button
+                        onClick={() =>
+                          setOpenDropdown(isOpen ? null : item.name)
+                        }
+                        className="flex w-full justify-between items-center px-3 py-2 text-base font-medium text-muted-foreground hover:text-primary"
+                      >
+                        {item.name}
+                        <ChevronDown
+                          className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")}
+                        />
+                      </button>
+
+                      <div
+                        className={cn(
+                          "overflow-hidden transition-[max-height] duration-300 ease-in-out pl-4",
+                          isOpen ? "max-h-[800px]" : "max-h-0"
+                        )}
+                      >
+                        {item.columns.flatMap((col) =>
+                          col.sections.flatMap((section) =>
+                            section.items.map((it) => (
+                              <Link
+                                key={it.name}
+                                to={it.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="block py-1 text-sm text-gray-700 hover:text-primary"
+                              >
+                                {it.name}
+                              </Link>
+                            ))
+                          )
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // ----- PROJECTS DROPDOWN
+                if (item.dropdown) {
+                  return (
+                    <div key={idx}>
+                      <button
+                        onClick={() =>
+                          setOpenDropdown(isOpen ? null : item.name)
+                        }
+                        className="flex w-full justify-between items-center px-3 py-2 text-base font-medium text-muted-foreground hover:text-primary"
+                      >
+                        {item.name}
+                        <ChevronDown
+                          className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")}
+                        />
+                      </button>
+
+                      <div
+                        className={cn(
+                          "overflow-hidden transition-[max-height] duration-300 ease-in-out pl-4",
+                          isOpen ? "max-h-[400px]" : "max-h-0"
+                        )}
+                      >
+                        {item.dropdown.map((d) => (
+                          <Link
+                            key={d.name}
+                            to={d.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="block py-1 text-sm text-gray-700 hover:text-primary"
+                          >
+                            {d.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+
+                return null;
+              })}
+
+              {/* ----- CONTACT INFO & ADMIN ----- */}
+              <div className="border-t border-border pt-4 space-y-2">
+                <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
                   <Button variant="outline" size="sm" className="w-full">
                     Admin Portal
                   </Button>
@@ -539,6 +621,8 @@ export function Header() {
             </div>
           </div>
         )}
+
+
       </div>
     </header>
   );
