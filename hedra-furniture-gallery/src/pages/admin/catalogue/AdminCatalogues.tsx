@@ -39,6 +39,11 @@ export default function AdminCatalogues() {
   // Redirect if not authenticated
   if (!isAuthenticated) return <Navigate to="/admin" replace />;
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+const toPublicUrl = (u?: string | null) =>
+  !u ? null : /^https?:\/\//i.test(u) ? u : API_BASE ? (u.startsWith("/") ? `${API_BASE}${u}` : `${API_BASE}/${u}`) : null;
+
+
   // Fetch all catalogues
   useEffect(() => {
     (async () => {
@@ -101,9 +106,18 @@ export default function AdminCatalogues() {
   const handleEdit = (code: string) => {
   navigate("/admin/catalogue/edit", { state: { code } });
  };
+const primaryImage = (c: Catalogue) =>
+  toPublicUrl(c.imageUrl) || toPublicUrl(c.brandLogoUrl) || null;
 
-  const primaryImage = (c: Catalogue) =>
-    c.imageUrl || c.brandLogoUrl || null;
+const handleOpenImage = (c: Catalogue) => {
+  const img = toPublicUrl(c.imageUrl) || toPublicUrl(c.brandLogoUrl);
+  if (img) window.open(img, "_blank", "noopener,noreferrer");
+};
+
+const handleOpenPdf = (c: Catalogue) => {
+  const pdf = toPublicUrl(c.pdfUrl);
+  if (pdf) window.open(pdf, "_blank", "noopener,noreferrer");
+};
 
   const TYPE_BADGE_TONE: Record<CatalogueType, string> = {
     CHAIR_CATALOGUE: "bg-blue-100 text-blue-800",
@@ -214,40 +228,42 @@ export default function AdminCatalogues() {
             {filtered.map((c) => {
               const img = primaryImage(c);
               return (
-                <Card key={c.code} className="overflow-hidden hover:shadow-card transition-all duration-300 group">
-                  <div
-                    className="aspect-[4/3] overflow-hidden relative cursor-pointer"
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Open ${c.name}`}
-                    onClick={() => handleView(c)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleView(c);
-                      }
-                    }}
-                  >
-                    {img ? (
-                      <img
-                        src={img}
-                        alt={c.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                        <FileText className="h-8 w-8 text-muted-foreground" />
-                      </div>
-                    )}
-                    {c.pdfUrl && (
-                      <div className="absolute top-2 left-2">
-                        <Badge className="bg-black/80 text-white">PDF</Badge>
-                      </div>
-                    )}
-                  </div>
+               <Card key={c.code} className="overflow-hidden hover:shadow-card transition-all duration-300 group">
+  <div
+    className="aspect-[4/3] overflow-hidden relative cursor-pointer"
+    role="button"
+    tabIndex={0}
+    aria-label={`Open image of ${c.name}`}
+    onClick={() => handleOpenImage(c)}                 // <— image only
+    onKeyDown={(e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handleOpenImage(c);                            // <— image only
+      }
+    }}
+  >
+    {primaryImage(c) ? (
+      <img
+        src={primaryImage(c) as string}
+        alt={c.name}
+        referrerPolicy="no-referrer"
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        loading="lazy"
+      />
+    ) : (
+      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+        <FileText className="h-8 w-8 text-muted-foreground" />
+      </div>
+    )}
 
-                  <CardContent className="p-4">
+    {c.pdfUrl && (
+      <div className="absolute top-2 left-2">
+        <Badge className="bg-black/80 text-white">PDF</Badge>
+      </div>
+    )}
+  </div>
+
+  <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
                         {c.name}
@@ -289,7 +305,8 @@ export default function AdminCatalogues() {
                       </Button>
                     </div>
                   </CardContent>
-                </Card>
+</Card>
+
               );
             })}
           </div>
