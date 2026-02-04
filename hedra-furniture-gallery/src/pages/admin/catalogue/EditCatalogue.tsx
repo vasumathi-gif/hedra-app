@@ -136,7 +136,8 @@ export default function EditCatalogue() {
               Back to Catalogues
             </Button>
             <div>
-              <h1 className="text-3xl font-bold">Edit Catalogue</h1>
+              <h1 className="text-3xl font-bold text-[#14294C]">Edit Catalogue</h1>
+              <p className="text-gray-900">Update catalogue information and settings</p>
             </div>
           </div>
         </div>
@@ -159,18 +160,20 @@ export default function EditCatalogue() {
             <div className="lg:col-span-2 space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Basic Information</CardTitle>
+                  <CardTitle className="text-[#14294C]">Basic Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="name">Name *</Label>
-                    <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter catalogue name" required />
+                    <Label htmlFor="name" className="text-gray-900">Name *</Label>
+                    <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter catalogue name" required 
+                    className="text-gray-900 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
+                    />
                   </div>
 
                   <div>
-                    <Label htmlFor="type">Type *</Label>
+                    <Label htmlFor="type" className="text-gray-900">Type *</Label>
                     <Select value={type} onValueChange={(v) => setType(v as CatalogueType)}>
-                      <SelectTrigger id="type">
+                      <SelectTrigger id="type" className="focus:border-[#b53e1d] focus:ring-0 focus:ring-offset-0">
                         <SelectValue placeholder="Select a type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -185,12 +188,12 @@ export default function EditCatalogue() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Assets</CardTitle>
+                  <CardTitle className="text-[#14294C]">Assets</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Image (main) */}
                   <div className="space-y-2">
-                    <Label>Main Image</Label>
+                    <Label className="text-gray-900">Main Image</Label>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="relative">
                         <div className="border rounded-md overflow-hidden h-28 flex items-center justify-center bg-muted">
@@ -218,7 +221,7 @@ export default function EditCatalogue() {
 
                   {/* Brand logo */}
                   <div className="space-y-2">
-                    <Label>Brand Logo</Label>
+                    <Label className="text-gray-900">Brand Logo</Label>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="relative">
                         <div className="border rounded-md overflow-hidden h-28 flex items-center justify-center bg-muted">
@@ -246,7 +249,7 @@ export default function EditCatalogue() {
 
                   {/* PDF */}
                   <div className="space-y-2">
-                    <Label>PDF</Label>
+                    <Label className="text-gray-900">PDF</Label>
                     <div className="grid grid-cols-2 gap-3">
                       <a
                         href={item.pdfUrl || "#"}
@@ -288,10 +291,10 @@ export default function EditCatalogue() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Save</CardTitle>
+                  <CardTitle className="text-[#14294C]">Save</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button type="submit" variant="hero" size="lg" className="w-full" disabled={saving}>
+                  <Button type="submit" variant="hero" size="lg" className="w-full bg-[#b53e1d] hover:bg-[#9f3518] text-white" disabled={saving}>
                     {saving ? (
                       <div className="flex items-center">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2" />
@@ -299,7 +302,7 @@ export default function EditCatalogue() {
                       </div>
                     ) : (
                       <>
-                        <Save className="h-5 w-5 mr-2" />
+                        <Save className="h-5 w-5 mr-2 " />
                         Update Catalogue
                       </>
                     )}

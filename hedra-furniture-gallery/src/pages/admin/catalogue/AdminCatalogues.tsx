@@ -39,9 +39,9 @@ export default function AdminCatalogues() {
   // Redirect if not authenticated
   if (!isAuthenticated) return <Navigate to="/admin" replace />;
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
-const toPublicUrl = (u?: string | null) =>
-  !u ? null : /^https?:\/\//i.test(u) ? u : API_BASE ? (u.startsWith("/") ? `${API_BASE}${u}` : `${API_BASE}/${u}`) : null;
+  const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+  const toPublicUrl = (u?: string | null) =>
+    !u ? null : /^https?:\/\//i.test(u) ? u : API_BASE ? (u.startsWith("/") ? `${API_BASE}${u}` : `${API_BASE}/${u}`) : null;
 
 
   // Fetch all catalogues
@@ -57,8 +57,8 @@ const toPublicUrl = (u?: string | null) =>
         const list: Catalogue[] = Array.isArray(res?.items)
           ? res.items
           : Array.isArray(res)
-          ? res
-          : [];
+            ? res
+            : [];
         setItems(list);
       } catch (e: any) {
         setErr(e?.message || "Failed to load catalogues");
@@ -80,21 +80,21 @@ const toPublicUrl = (u?: string | null) =>
     });
   }, [items, searchQuery, selectedType]);
 
- const handleDelete = async (code: string, name: string) => {
-  if (!window.confirm(`Delete "${name}"? This cannot be undone.`)) return;
-  try {
-        const token = localStorage.getItem("authToken") || "";
-    +   await apiDeleteRequest(`catalogue/catalogue/${code}`, token); // <-- code route
-+   setItems((prev) => prev.filter((it) => it.code !== code));
-    toast({ title: "Catalogue Deleted", description: `"${name}" has been removed.` });
-  } catch (e: any) {
-    toast({
-      title: "Error",
-      description: e?.response?.data?.message || "Failed to delete catalogue",
-      variant: "destructive",
-    });
-  }
-};
+  const handleDelete = async (code: string, name: string) => {
+    if (!window.confirm(`Delete "${name}"? This cannot be undone.`)) return;
+    try {
+      const token = localStorage.getItem("authToken") || "";
+         await apiDeleteRequest(`catalogue/catalogue/${code}`, token); // <-- code route
+         setItems((prev) => prev.filter((it) => it.code !== code));
+      toast({ title: "Catalogue Deleted", description: `"${name}" has been removed.` });
+    } catch (e: any) {
+      toast({
+        title: "Error",
+        description: e?.response?.data?.message || "Failed to delete catalogue",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleView = (c: Catalogue) => {
     // If it’s a PDF, open it; otherwise open image in new tab.
@@ -104,20 +104,20 @@ const toPublicUrl = (u?: string | null) =>
   };
 
   const handleEdit = (code: string) => {
-  navigate("/admin/catalogue/edit", { state: { code } });
- };
-const primaryImage = (c: Catalogue) =>
-  toPublicUrl(c.imageUrl) || toPublicUrl(c.brandLogoUrl) || null;
+    navigate("/admin/catalogue/edit", { state: { code } });
+  };
+  const primaryImage = (c: Catalogue) =>
+    toPublicUrl(c.imageUrl) || toPublicUrl(c.brandLogoUrl) || null;
 
-const handleOpenImage = (c: Catalogue) => {
-  const img = toPublicUrl(c.imageUrl) || toPublicUrl(c.brandLogoUrl);
-  if (img) window.open(img, "_blank", "noopener,noreferrer");
-};
+  const handleOpenImage = (c: Catalogue) => {
+    const img = toPublicUrl(c.imageUrl) || toPublicUrl(c.brandLogoUrl);
+    if (img) window.open(img, "_blank", "noopener,noreferrer");
+  };
 
-const handleOpenPdf = (c: Catalogue) => {
-  const pdf = toPublicUrl(c.pdfUrl);
-  if (pdf) window.open(pdf, "_blank", "noopener,noreferrer");
-};
+  const handleOpenPdf = (c: Catalogue) => {
+    const pdf = toPublicUrl(c.pdfUrl);
+    if (pdf) window.open(pdf, "_blank", "noopener,noreferrer");
+  };
 
   const TYPE_BADGE_TONE: Record<CatalogueType, string> = {
     CHAIR_CATALOGUE: "bg-blue-100 text-blue-800",
@@ -131,11 +131,12 @@ const handleOpenPdf = (c: Catalogue) => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Catalogues</h1>
-            <p className="text-muted-foreground">Manage all catalogues (chair, upholstery & brand logos)</p>
+            <h1 className="text-3xl font-bold text-[#14294C]">Catalogues</h1>
+            <p className="text-muted-gray-900">Manage all catalogues (chair, upholstery & brand logos)</p>
           </div>
           <Link to="/admin/catalogue/upload">
-            <Button variant="hero">
+            <Button variant="hero"
+              className="bg-[#b53e1d] hover:bg-[#9f3518] text-white">
               <Plus className="mr-2 h-4 w-4" />
               Add Catalogue
             </Button>
@@ -152,7 +153,7 @@ const handleOpenPdf = (c: Catalogue) => {
                   placeholder="Search by name or code..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
               </div>
 
@@ -160,7 +161,7 @@ const handleOpenPdf = (c: Catalogue) => {
                 value={selectedType}
                 onValueChange={(val) => setSelectedType(val as CatalogueType | "all")}
               >
-                <SelectTrigger className="w-56">
+                <SelectTrigger className="w-56 focus:border-[#b53e1d] focus:ring-0 focus:ring-offset-0">
                   <SelectValue placeholder="Filter by type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -228,44 +229,44 @@ const handleOpenPdf = (c: Catalogue) => {
             {filtered.map((c) => {
               const img = primaryImage(c);
               return (
-               <Card key={c.code} className="overflow-hidden hover:shadow-card transition-all duration-300 group">
-  <div
-    className="aspect-[4/3] overflow-hidden relative cursor-pointer"
-    role="button"
-    tabIndex={0}
-    aria-label={`Open image of ${c.name}`}
-    onClick={() => handleOpenImage(c)}                 // <— image only
-    onKeyDown={(e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        handleOpenImage(c);                            // <— image only
-      }
-    }}
-  >
-    {primaryImage(c) ? (
-      <img
-        src={primaryImage(c) as string}
-        alt={c.name}
-        referrerPolicy="no-referrer"
-        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        loading="lazy"
-      />
-    ) : (
-      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-        <FileText className="h-8 w-8 text-muted-foreground" />
-      </div>
-    )}
+                <Card key={c.code} className="overflow-hidden hover:shadow-card transition-all duration-300 group">
+                  <div
+                    className="aspect-[4/3] overflow-hidden relative cursor-pointer"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Open image of ${c.name}`}
+                    onClick={() => handleOpenImage(c)}                 // <— image only
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleOpenImage(c);                            // <— image only
+                      }
+                    }}
+                  >
+                    {primaryImage(c) ? (
+                      <img
+                        src={primaryImage(c) as string}
+                        alt={c.name}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                        <FileText className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                    )}
 
-    {c.pdfUrl && (
-      <div className="absolute top-2 left-2">
-        <Badge className="bg-black/80 text-white">PDF</Badge>
-      </div>
-    )}
-  </div>
+                    {c.pdfUrl && (
+                      <div className="absolute top-2 left-2">
+                        <Badge className="bg-black/80 text-white">PDF</Badge>
+                      </div>
+                    )}
+                  </div>
 
-  <CardContent className="p-4">
+                  <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                      <h3 className="font-semibold  text-gray-900 line-clamp-1 group-hover:text-[#9f3518] transition-colors">
                         {c.name}
                       </h3>
                       <Badge className={TYPE_BADGE_TONE[c.type]}>{c.type.replace("_", " ")}</Badge>
@@ -286,7 +287,7 @@ const handleOpenPdf = (c: Catalogue) => {
                         <Edit className="mr-2 h-4 w-4" />
                         Edit
                       </Button>
-                     
+
                       <Button
                         variant="outline"
                         size="sm"
@@ -298,7 +299,7 @@ const handleOpenPdf = (c: Catalogue) => {
                       </Button>
                     </div>
                   </CardContent>
-</Card>
+                </Card>
 
               );
             })}

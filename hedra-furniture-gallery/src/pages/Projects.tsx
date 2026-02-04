@@ -39,17 +39,17 @@ export default function Projects() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1">
         {/* Page Header */}
         <section className="bg-muted/30 py-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Our office Projects
+              <h1 className="text-4xl md:text-5xl font-bold text-[#14294C] mb-4">
+                Office Projects
               </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Explore our portfolio of completed projects that showcase our craftsmanship 
+              <p className="text-lg text-gray-900 max-w-2xl mx-auto">
+                Explore our portfolio of completed projects that showcase our craftsmanship
                 and attention to detail across various spaces and industries.
               </p>
             </div>
@@ -71,22 +71,28 @@ export default function Projects() {
                   </div>
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-3">
-                      <Badge variant="secondary">{project.category}</Badge>
-                      <span className="text-sm text-muted-foreground">{project.year}</span>
+                      <Badge
+                        variant="secondary"
+                        className="bg-[#b53e1d] text-white hover:bg-[#b53e1d]/90"
+                      >
+                        {project.category}
+                      </Badge>
+
+                      <span className="text-sm text-gray-500">{project.year}</span>
                     </div>
-                    
-                    <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+
+                    <h3 className="text-xl font-semibold text-[#14294C] mb-2 group-hover:text-[#14294C] transition-colors">
                       {project.title}
                     </h3>
-                    
-                    <p className="text-muted-foreground mb-4 line-clamp-3">
+
+                    <p className="text-gray-900 mb-4 line-clamp-3">
                       {project.description}
                     </p>
-                    
+
                     <div className="border-t border-border pt-4">
                       <p className="text-sm">
-                        <span className="font-medium text-foreground">Client:</span>{' '}
-                        <span className="text-muted-foreground">{project.client}</span>
+                        <span className="font-medium text-gray-900">Client:</span>{' '}
+                        <span className="text-muted-gray-500">{project.client}</span>
                       </p>
                     </div>
                   </CardContent>
@@ -97,9 +103,9 @@ export default function Projects() {
         </section>
 
         {/* Call to Action */}
-        <section className="py-16 bg-gradient-hero text-center">
+        <section className="py-16 text-center bg-[linear-gradient(90deg,#293654_0%,#88747B_50%,#B78A83_100%)]">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl  font-bold text-white mb-4">
               Ready to Start Your Project?
             </h2>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
@@ -107,9 +113,10 @@ export default function Projects() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="/contact" className="inline-block">
-                <button className="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-8 py-3 rounded-md font-semibold transition-colors">
+                <button className="bg-[#b53e1d] text-white hover:bg-[#b53e1d]/90 px-8 py-3 rounded-md font-semibold transition-colors">
                   Get a Quote
                 </button>
+
               </a>
               <a href="/catalog" className="inline-block">
                 <button className="border border-white text-white hover:bg-white hover:text-primary px-8 py-3 rounded-md font-semibold transition-colors">
@@ -120,7 +127,7 @@ export default function Projects() {
           </div>
         </section>
       </main>
-      
+
       <Footer />
     </div>
   );

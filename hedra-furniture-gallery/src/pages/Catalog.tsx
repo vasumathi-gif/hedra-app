@@ -284,10 +284,10 @@ export default function Catalog() {
 
         <section className="bg-muted/30 py-12">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#14294C] mb-4">
               Product Catalog
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-gray-900 max-w-2xl mx-auto">
               Discover our comprehensive collection of premium furniture designed to elevate your space.
             </p>
           </div>
@@ -302,7 +302,7 @@ export default function Catalog() {
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
               </div>
 
@@ -311,7 +311,7 @@ export default function Catalog() {
                   value={selectedCategory}
                   onValueChange={(value) => setSelectedCategory(value as ProductCategory | 'all')}
                 >
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-48 focus:border-[#b53e1d] focus:ring-0 focus:ring-offset-0">
                     <Filter className="h-4 w-4 mr-2" />
                     <SelectValue placeholder="Filter by category" />
                   </SelectTrigger>
@@ -325,7 +325,7 @@ export default function Catalog() {
                   </SelectContent>
                 </Select>
 
-                <div className="flex border border-border rounded-md">
+                {/* <div className="flex border border-border rounded-md">
                   <Button
                     variant={viewMode === 'grid' ? 'default' : 'ghost'}
                     size="sm"
@@ -342,7 +342,7 @@ export default function Catalog() {
                   >
                     <List className="h-4 w-4" />
                   </Button>
-                </div>
+                </div> */}
 
                 {/* <Button variant="outline" size="sm" onClick={handleDownload}>
                   <Download className="h-4 w-4 mr-2" />
@@ -458,7 +458,7 @@ export default function Catalog() {
                           </div>
                           <CardContent className="flex-1 p-6">
                             <div className="flex items-start justify-between mb-3">
-                              <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
+                              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary transition-colors">
                                 {product.name}
                               </h3>
                               <div className="flex gap-2">

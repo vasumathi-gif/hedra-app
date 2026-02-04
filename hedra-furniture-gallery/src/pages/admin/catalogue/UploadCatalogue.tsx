@@ -109,8 +109,8 @@ export default function UploadCatalogue() {
               Back 
             </Button>
             <div>
-              <h1 className="text-3xl font-bold">Upload Catalogue</h1>
-              <p className="text-muted-foreground">Create a catalogue entry with image, optional PDF, and brand logo.</p>
+              <h1 className="text-3xl font-bold text-[#14294C]">Upload Catalogue</h1>
+              <p className="text-gray-900">Create a catalogue entry with image, optional PDF, and brand logo.</p>
             </div>
           </div>
         </div>
@@ -120,24 +120,25 @@ export default function UploadCatalogue() {
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Catalogue Details</CardTitle>
+                <CardTitle className="text-[#14294C]">Catalogue Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="cat-name">Name *</Label>
+                  <Label htmlFor="cat-name" className="text-gray-900">Name *</Label>
                   <Input
                     id="cat-name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Process Chair Catalogue 2025"
                     required
+                    className="text-gray-900 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
                   />
                 </div>
 
                 <div>
-                  <Label>Type *</Label>
+                  <Label className="text-gray-900">Type *</Label>
                   <Select value={type} onValueChange={(v) => setType(v as CatalogueType)} required>
-                    <SelectTrigger>
+                    <SelectTrigger className="focus:border-[#b53e1d] focus:ring-0 focus:ring-offset-0">
                       <SelectValue placeholder="Select a type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -150,7 +151,7 @@ export default function UploadCatalogue() {
 
                 {/* Image (required) */}
                 <div className="space-y-2">
-                  <Label>Cover Image *</Label>
+                  <Label className="text-gray-900">Cover Image *</Label>
                   <div className="mt-2">
                     <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -185,7 +186,7 @@ export default function UploadCatalogue() {
 
                 {/* PDF (optional) */}
                 <div className="space-y-2">
-                  <Label>PDF (optional)</Label>
+                  <Label className="text-gray-900">PDF (optional)</Label>
                   <div className="flex items-center gap-3">
                     <label className="inline-flex items-center gap-2 px-3 py-2 border rounded-md cursor-pointer hover:bg-muted/50">
                       <FileText className="h-4 w-4" />
@@ -215,12 +216,12 @@ export default function UploadCatalogue() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Actions</CardTitle>
+                <CardTitle className="text-[#14294C]">Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full  bg-[#b53e1d] hover:bg-[#9f3518] text-white"
                   disabled={submitting}
                 >
                   {submitting ? "Saving..." : (<><Save className="mr-2 h-5 w-5" /> Save Catalogue</>)}
@@ -239,7 +240,7 @@ export default function UploadCatalogue() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Tips</CardTitle>
+                <CardTitle className="text-[#14294C]">Tips</CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground space-y-2">
                 <div className="flex items-center gap-2"><ImageIcon className="h-4 w-4" />Use clear cover images (JPG/PNG/WebP).</div>

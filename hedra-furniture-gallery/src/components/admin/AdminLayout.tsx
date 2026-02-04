@@ -34,7 +34,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <div className="p-6 border-b border-border">
   <div className="flex flex-col items-center space-y-2"> {/* Add space between logo and text */}
     <img src={edendekLogo} alt="Edendek logo" className="block h-8 w-auto" /> {/* Increased size here */}
-    <p className="text-xs text-muted-foreground">Admin Panel</p> {/* Admin Panel text under the logo */}
+    <p className="text-xs text-gray-500">Admin Panel</p> {/* Admin Panel text under the logo */}
   </div>
 </div>
 
@@ -53,8 +53,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   className={cn(
                     "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
                     isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "bg-[#b53e1d] text-white"
+    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
                 >
                   <IconComponent className="mr-3 h-4 w-4" />
@@ -69,7 +69,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               href="/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
+              className="flex items-center px-3 py-2 text-sm font-medium text-gray-500 hover:text-foreground hover:bg-muted rounded-md transition-colors"
             >
               <Eye className="mr-3 h-4 w-4" />
               View Website
@@ -81,16 +81,16 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <div className="p-4 border-t border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-secondary rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#b53e1d] rounded-full flex items-center justify-center">
                 <span className="text-secondary-foreground font-medium text-sm">
                   {user?.name?.charAt(0) || "?"}
                 </span>
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-foreground truncate">
+                <p className="text-sm font-medium text- truncate text-gray-900">
                   {user?.name || "Admin"}
                 </p>
-                <p className="text-xs text-muted-foreground truncate">
+                <p className="text-xs text-gray-500 truncate">
                   {user?.email || "admin@hedrafabrications.com"}
                 </p>
               </div>
@@ -113,7 +113,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <header className="bg-card border-b border-border px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="text-sm font-medium text-muted-foreground">
+              <h1 className="text-sm font-medium text-gray-500">
                 Admin Panel
               </h1>
             </div>
@@ -122,7 +122,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 href="/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-gray-500 hover:text-foreground transition-colors"
               >
                 Visit Website →
               </a>

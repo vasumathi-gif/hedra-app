@@ -63,10 +63,10 @@ export type ProductCategory =
 export const PRODUCT_CATEGORIES: { value: ProductCategory; label: string }[] = [
   // HOME
   { value: 'sofa',                label: 'Sofas' },
-  { value: 'sofa-1-seater', label: '1 seater to Single seater' },
-  { value: 'sofa-2-seater', label: '2 seater to Two-Seater' },
-  { value: 'sofa-3-seater', label: '3 Seater to Three-seater' },
-  { value: 'sofa-4-seater-plus', label: '4 seater to four-seater' },
+  { value: 'sofa-1-seater', label: ' Single Seater' },
+  { value: 'sofa-2-seater', label: ' Two-Seater' },
+  { value: 'sofa-3-seater', label: ' Three-Seater' },
+  { value: 'sofa-4-seater-plus', label: ' Four-Seater' },
   { value: 'sofa-corner', label: 'Corner Sofas' },
   { value: 'sofa-modular', label: 'Modular Sofas' },
   { value: 'sofa-lounge', label: 'Lounge Sofas' },

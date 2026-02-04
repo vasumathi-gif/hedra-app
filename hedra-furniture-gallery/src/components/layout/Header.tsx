@@ -23,10 +23,10 @@ const navigation = [
                 name: "Sofas",
                 href: "/sofa",
                 subItems: [
-                  { name: "1 seater to Single seater", href: "/sofa-1-seater" },
-                  { name: "2 seater to Two-Seater", href: "/sofa-2-seater" },
-                  { name: "3 Seater to Three-seater", href: "/sofa-3-seater" },
-                  { name: "4 seater to four-seater", href: "/sofa-4-seater-plus" },
+                  { name: " Single Seater", href: "/sofa-1-seater" },
+                  { name: " Two-Seater", href: "/sofa-2-seater" },
+                  { name: " Three-Seater", href: "/sofa-3-seater" },
+                  { name: " Four-Seater", href: "/sofa-4-seater-plus" },
                   { name: "Corner Sofas", href: "/sofa-corner" },
                   { name: "Modular Sofas", href: "/sofa-modular" },
                   { name: "Lounge Sofas", href: "/sofa-lounge" }, // fixed
@@ -166,8 +166,11 @@ const NavLinks = ({
                   setOpenDropdown(openDropdown === item.name ? null : item.name)
                 }
                 className={cn(
-                  "flex items-center text-sm font-medium hover:text-primary focus:outline-none",
-                  active ? "text-primary border-b-2 border-primary pb-0.5" : "text-muted-foreground"
+                  "flex items-center text-base font-semibold hover:text-[#14294C] focus:outline-none",
+                  active
+                    ? "text-[#14294C] border-b-2 border-[#14294C] pb-0.5"
+                    : "text-[#14294C]"
+
                 )}
               >
                 {item.name}
@@ -197,8 +200,11 @@ const NavLinks = ({
                   setOpenDropdown(openDropdown === item.name ? null : item.name)
                 }
                 className={cn(
-                  "flex items-center text-sm font-medium hover:text-primary focus:outline-none",
-                  active ? "text-primary border-b-2 border-primary pb-0.5" : "text-muted-foreground"
+                  "flex items-center text-base font-semibold hover:text-[#14294C] focus:outline-none",
+                  active
+                    ? "text-[#14294C] border-b-2 border-[#14294C] pb-0.5"
+                    : "text-[#14294C]"
+
                 )}
               >
                 {item.name}
@@ -243,8 +249,11 @@ const NavLinks = ({
             key={item.name}
             to={item.href}
             className={cn(
-              "text-sm font-medium hover:text-primary",
-              active ? "text-primary border-b-2 border-primary pb-0.5" : "text-muted-foreground"
+              "text-base font-semibold hover:text-[#14294C]",
+              active
+                ? "text-[#14294C] border-b-2 border-[#14294C] pb-0.5"
+                : "text-[#14294C]"
+
             )}
           >
             {item.name}
@@ -257,15 +266,16 @@ const NavLinks = ({
 
 const DesktopUtilities = () => (
   <div className="hidden md:flex items-center gap-4">
-    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+    <div className="flex items-center gap-2 text-sm text-[#14294C]">
       <Phone className="h-4 w-4" />
       <span>+91 99624 52447</span>
     </div>
     <Link to="/admin">
-      <Button variant="outline" size="sm">Admin</Button>
+      <Button variant="outline" size="sm" className="w-full  text-[#14294C]  hover:text-[#14294C]">Admin</Button>
     </Link>
   </div>
 );
+
 
 
 /* -------------------- HEADER -------------------- */
@@ -340,12 +350,20 @@ export function Header() {
       )
     ) ?? false;
 
+const forceCompact = scrolled || openDropdown === "Furniture";
+
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+   <header
+  className={cn(
+    "sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+    openDropdown ? "border-b-0" : "border-b border-border"
+  )}
+>
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ---------- Expanded layout (logo above navbar) ---------- */}
-        {!scrolled && (
+        {!forceCompact && (
           <>
             {/* Row 1: Logo centered */}
 
@@ -375,7 +393,7 @@ export function Header() {
         )}
 
         {/* ---------- Compact layout (logo left • navbar centered • utilities right) ---------- */}
-        {scrolled && (
+        {forceCompact && (
           <div className="h-16 relative flex items-center transition-all duration-500">
             {/* Left: Logo */}
             <Link to="/" className="flex items-center gap-2">
@@ -412,10 +430,11 @@ export function Header() {
         {/* ---------- MEGA DROPDOWN (anchored below the header) ---------- */}
         {openDropdown === "Furniture" && furniture && (
           <div
-            className="absolute left-0 right-0 bg-white border-t border-border shadow-lg z-50"
-            style={{ top: scrolled ? "64px" : "calc(56px + 48px)" }}
-            data-dropdown-area
-          >
+  className="absolute left-0 right-0 bg-white shadow-lg z-50"
+  style={{ top: "100%" }}
+  data-dropdown-area
+>
+
             <div className="grid grid-cols-[1fr_1fr_1fr_280px] gap-8 px-6 py-6 ml-10 mr-20">
               {/* 3 text columns */}
               {furniture.columns.map((col: any, idx: number) => (
@@ -445,10 +464,11 @@ export function Header() {
                             {g.subItems && (
                               <div
                                 className="
-                                  absolute left-full top-0 ml-2 hidden group-hover:block group-focus-within:block
-                                  min-w-[220px] bg-white border border-gray-200 rounded-md shadow-lg z-50
-                                  py-2
-                                "
+    absolute left-full top-0 hidden group-hover:block group-focus-within:block
+    min-w-[240px] bg-white border border-gray-200 rounded-md shadow-lg z-50
+    py-2
+  "
+                                style={{ left: "100%", marginLeft: 0 }}
                               >
                                 <ul className="space-y-0.5">
                                   {g.subItems.map((sub: any) => (
@@ -489,7 +509,12 @@ export function Header() {
                     )}
                     {furniture.image?.cta && (
                       <Link to={furniture.image.cta.href} onClick={() => setOpenDropdown(null)}>
-                        <Button size="sm" variant="secondary">
+                        <Button size="sm" variant="secondary"  className="
+  bg-[#14294C]
+    text-white
+    hover:bg-[#1b3a6d]
+    border-none
+  ">
                           {furniture.image.cta.label}
                         </Button>
                       </Link>
@@ -613,7 +638,7 @@ export function Header() {
               {/* ----- CONTACT INFO & ADMIN ----- */}
               <div className="border-t border-border pt-4 space-y-2">
                 <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" size="sm" className="w-full">
+                  <Button variant="outline" size="sm" className="w-full" >
                     Admin Portal
                   </Button>
                 </Link>

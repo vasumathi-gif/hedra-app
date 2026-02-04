@@ -63,12 +63,13 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back! Here's an overview of your catalog.</p>
+            <h1 className="text-3xl font-bold text-[#14294C]">Dashboard</h1>
+            <p className="text-gray-900">Welcome back! Here's an overview of your catalog.</p>
           </div>
           <Link to="/admin/products/add">
-            <Button variant="hero">
-              <Plus className="mr-2 h-4 w-4" />
+            <Button variant="hero"
+             className="bg-[#b53e1d] hover:bg-[#9f3518] text-white">
+              <Plus className="mr-2 h-4 w-4 "  />
               Add Product
             </Button>
           </Link>
@@ -83,17 +84,17 @@ export default function AdminDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">
+                      <p className="text-sm font-medium text-gray-900">
                         {stat.title}
                       </p>
-                      <p className="text-3xl font-bold text-foreground">
+                      <p className="text-3xl font-bold text-gray-900">
                         {stat.value}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-gray-500 mt-1">
                         {stat.description}
                       </p>
                     </div>
-                    <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-[#b53e1d] rounded-lg flex items-center justify-center">
                       <IconComponent className="h-6 w-6 text-primary-foreground" />
                     </div>
                   </div>
@@ -107,18 +108,18 @@ export default function AdminDashboard() {
           {/* Categories Overview */}
           <Card>
             <CardHeader>
-              <CardTitle>Categories Overview</CardTitle>
+              <CardTitle className="text-[#14294C]">Categories Overview</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {categoryStats.map((category) => (
                   <div key={category.value} className="flex items-center justify-between">
-                    <span className="font-medium text-foreground">{category.label}</span>
+                    <span className="font-medium text-gray-900">{category.label}</span>
                     <div className="flex items-center space-x-2">
-                      <span className="text-sm text-muted-foreground">{category.count} products</span>
+                      <span className="text-sm text-gray-500">{category.count} products</span>
                       <div className="w-16 bg-muted rounded-full h-2">
                         <div
-                          className="bg-gradient-primary h-2 rounded-full"
+                          className="bg-[#b53e1d] h-2 rounded-full"
                           style={{
                             width: `${products.length > 0 ? (category.count / products.length) * 100 : 0}%`
                           }}
@@ -134,10 +135,10 @@ export default function AdminDashboard() {
           {/* Recent Products */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Recent Products</CardTitle>
+              <CardTitle className="text-[#14294C]">Recent Products</CardTitle>
               <Link to="/admin/products">
-                <Button variant="outline" size="sm">
-                  <Eye className="mr-2 h-4 w-4" />
+                <Button variant="outline" size="sm" className='text-[#14294C]'>
+                  <Eye className="mr-2 h-4 w-4 " />
                   View All
                 </Button>
               </Link>
@@ -168,10 +169,10 @@ export default function AdminDashboard() {
                       />
 
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-foreground truncate">
+                        <p className="font-medium text-gray-900 truncate">
                           {product.name}
                         </p>
-                        <p className="text-sm text-muted-foreground capitalize">
+                        <p className="text-sm text-gray-500 capitalize">
                           {product.category.replace('-', ' ')}
                         </p>
                       </div>
@@ -198,7 +199,7 @@ export default function AdminDashboard() {
         {/* Quick Actions */}
         <Card>
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle className="text-[#14294C]">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -206,8 +207,8 @@ export default function AdminDashboard() {
                 <Button variant="outline" className="w-full justify-start h-auto p-4">
                   <Plus className="mr-3 h-5 w-5" />
                   <div className="text-left">
-                    <div className="font-medium">Add New Product</div>
-                    <div className="text-sm text-muted-foreground">Create a new product listing</div>
+                    <div className="font-medium text-gray-900">Add New Product</div>
+                    <div className="text-sm text-gray-500">Create a new product listing</div>
                   </div>
                 </Button>
               </Link>
@@ -216,8 +217,8 @@ export default function AdminDashboard() {
                 <Button variant="outline" className="w-full justify-start h-auto p-4">
                   <Package className="mr-3 h-5 w-5" />
                   <div className="text-left">
-                    <div className="font-medium">Manage Products</div>
-                    <div className="text-sm text-muted-foreground">Edit or delete existing products</div>
+                    <div className="font-medium text-gray-900">Manage Products</div>
+                    <div className="text-sm text-gray-500">Edit or delete existing products</div>
                   </div>
                 </Button>
               </Link>
@@ -226,8 +227,8 @@ export default function AdminDashboard() {
                 <Button variant="outline" className="w-full justify-start h-auto p-4">
                   <Eye className="mr-3 h-5 w-5" />
                   <div className="text-left">
-                    <div className="font-medium">View Website</div>
-                    <div className="text-sm text-muted-foreground">See your catalog live</div>
+                    <div className="font-medium text-gray-900">View Website</div>
+                    <div className="text-sm text-gray-500">See your catalog live</div>
                   </div>
                 </Button>
               </a>

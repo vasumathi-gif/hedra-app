@@ -66,11 +66,12 @@ const handleViewProduct = (productId: string) => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Products</h1>
-            <p className="text-muted-foreground">Manage your product catalog</p>
+            <h1 className="text-3xl font-bold text-[#14294C]">Products</h1>
+            <p className="text-gray-900">Manage your product catalog</p>
           </div>
           <Link to="/admin/products/add">
-            <Button variant="hero">
+            <Button variant="hero"
+            className="bg-[#b53e1d] hover:bg-[#9f3518] text-white">
               <Plus className="mr-2 h-4 w-4" />
               Add Product
             </Button>
@@ -87,14 +88,14 @@ const handleViewProduct = (productId: string) => {
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                 className="pl-10 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
               </div>
               <Select
                 value={selectedCategory}
                 onValueChange={(value) => setSelectedCategory(value as ProductCategory | 'all')}
               >
-                <SelectTrigger className="w-48">
+               <SelectTrigger className="w-48 focus:border-[#b53e1d] focus:ring-0 focus:ring-offset-0">
                   <SelectValue placeholder="Filter by category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -177,20 +178,20 @@ const handleViewProduct = (productId: string) => {
                 
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-[#9f3518] transition-colors">
                       {product.name}
                     </h3>
                   </div>
                   
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                  <p className="text-sm text-gray-500 mb-3 line-clamp-2">
                     {product.description}
                   </p>
                   
                   <div className="flex items-center justify-between mb-4">
-                    <Badge variant="secondary" className="capitalize">
+                    <Badge variant="secondary" className="capitalize bg-[#14294C] hover:bg-[#14294C]">
                       {product.category.replace('-', ' ')}
                     </Badge>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-gray-500">
                       {new Date(product.createdAt).toLocaleDateString()}
                     </span>
                   </div>

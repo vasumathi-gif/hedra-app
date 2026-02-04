@@ -24,8 +24,8 @@ export default function AddProduct() {
 
 
   // replace images: [] as string[] with two states
-const [images, setImages] = useState<File[]>([]);
-const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [images, setImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
 
 
@@ -90,85 +90,85 @@ const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const files = e.target.files;
-  if (!files || !files.length) return;
+    const files = e.target.files;
+    if (!files || !files.length) return;
 
-  const newFiles = Array.from(files);
-  setImages(prev => [...prev, ...newFiles]);
+    const newFiles = Array.from(files);
+    setImages(prev => [...prev, ...newFiles]);
 
-  // previews for UI
-  const newPreviews = newFiles.map(f => URL.createObjectURL(f));
-  setImagePreviews(prev => [...prev, ...newPreviews]);
+    // previews for UI
+    const newPreviews = newFiles.map(f => URL.createObjectURL(f));
+    setImagePreviews(prev => [...prev, ...newPreviews]);
 
-  // clear input so same file can be selected again if needed
-  e.currentTarget.value = "";
-};
+    // clear input so same file can be selected again if needed
+    e.currentTarget.value = "";
+  };
 
 
-const removeImage = (index: number) => {
-  setImages(prev => prev.filter((_, i) => i !== index));
-  setImagePreviews(prev => {
-    // revoke object URL to avoid memory leak
-    URL.revokeObjectURL(prev[index]);
-    return prev.filter((_, i) => i !== index);
-  });
-};
-
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-
-  try {
-    // Basic validations
-    if (!formData.name.trim()) throw new Error('Product name is required');
-    if (!formData.description.trim()) throw new Error('Product description is required');
-    if (!formData.category) throw new Error('Product category is required');
-    if (!formData.price || isNaN(Number(formData.price))) throw new Error('Valid price is required');
-    if (!images.length) throw new Error('Please upload at least one image.');
-
-    // ✅ Build specsArray from UI state
-    const specsArray = specifications
-      .filter(s => s.key.trim() && s.value.trim())
-      .map(s => ({ key: s.key.trim(), value: s.value.trim() }));
-
-    // ✅ Build tagsArray from comma-separated string
-    const tagsArray = formData.tags
-      .split(',')
-      .map(t => t.trim())
-      .filter(Boolean);
-
-    // ✅ Build payload
-    const payload = new FormData();
-    payload.append('name', formData.name);
-    payload.append('description', formData.description);
-    payload.append('category', formData.category);
-    payload.append('price', String(formData.price));
-    payload.append('tags', JSON.stringify(tagsArray));
-    payload.append('specifications', JSON.stringify(specsArray));
-    payload.append('featured', String(formData.featured));
-
-    // ✅ Append all files with the SAME key "images"
-    images.forEach(file => payload.append('images', file));
-
-    const result = await apiPostRequest('products/saveProduct', payload);
-
-    toast({
-      title: 'Product Added',
-      description: `"${result.name}" has been successfully added.`,
+  const removeImage = (index: number) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => {
+      // revoke object URL to avoid memory leak
+      URL.revokeObjectURL(prev[index]);
+      return prev.filter((_, i) => i !== index);
     });
+  };
 
-    navigate('/admin/products');
-    window.location.reload();
-  } catch (error: any) {
-    toast({
-      title: 'Error',
-      description: error.message || 'Something went wrong while adding product.',
-      variant: 'destructive',
-    });
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Basic validations
+      if (!formData.name.trim()) throw new Error('Product name is required');
+      if (!formData.description.trim()) throw new Error('Product description is required');
+      if (!formData.category) throw new Error('Product category is required');
+      if (!formData.price || isNaN(Number(formData.price))) throw new Error('Valid price is required');
+      if (!images.length) throw new Error('Please upload at least one image.');
+
+      // ✅ Build specsArray from UI state
+      const specsArray = specifications
+        .filter(s => s.key.trim() && s.value.trim())
+        .map(s => ({ key: s.key.trim(), value: s.value.trim() }));
+
+      // ✅ Build tagsArray from comma-separated string
+      const tagsArray = formData.tags
+        .split(',')
+        .map(t => t.trim())
+        .filter(Boolean);
+
+      // ✅ Build payload
+      const payload = new FormData();
+      payload.append('name', formData.name);
+      payload.append('description', formData.description);
+      payload.append('category', formData.category);
+      payload.append('price', String(formData.price));
+      payload.append('tags', JSON.stringify(tagsArray));
+      payload.append('specifications', JSON.stringify(specsArray));
+      payload.append('featured', String(formData.featured));
+
+      // ✅ Append all files with the SAME key "images"
+      images.forEach(file => payload.append('images', file));
+
+      const result = await apiPostRequest('products/saveProduct', payload);
+
+      toast({
+        title: 'Product Added',
+        description: `"${result.name}" has been successfully added.`,
+      });
+
+      navigate('/admin/products');
+      window.location.reload();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Something went wrong while adding product.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
 
 
@@ -185,8 +185,8 @@ const handleSubmit = async (e: React.FormEvent) => {
               Back to Products
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Add New Product</h1>
-              <p className="text-muted-foreground">Create a new product listing for your catalog</p>
+              <h1 className="text-3xl font-bold text-[#14294C]">Add New Product</h1>
+              <p className="text-gray-900">Create a new product listing for your catalog</p>
             </div>
           </div>
         </div>
@@ -197,11 +197,11 @@ const handleSubmit = async (e: React.FormEvent) => {
             <div className="lg:col-span-2 space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Basic Information</CardTitle>
+                  <CardTitle className="text-[#14294C]">Basic Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="name">Product Name *</Label>
+                    <Label htmlFor="name" className="text-gray-900">Product Name *</Label>
                     <Input
                       id="name"
                       name="name"
@@ -209,11 +209,12 @@ const handleSubmit = async (e: React.FormEvent) => {
                       onChange={handleInputChange}
                       placeholder="Enter product name"
                       required
+                      className="text-gray-900 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="description">Description *</Label>
+                    <Label htmlFor="description" className="text-gray-900">Description *</Label>
                     <Textarea
                       id="description"
                       name="description"
@@ -222,13 +223,14 @@ const handleSubmit = async (e: React.FormEvent) => {
                       placeholder="Describe the product features, materials, and benefits"
                       rows={4}
                       required
+                      className="text-gray-900 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="category">Category *</Label>
+                    <Label htmlFor="category" className="text-gray-900">Category *</Label>
                     <Select onValueChange={handleCategoryChange} required>
-                      <SelectTrigger>
+                     <SelectTrigger className="focus:border-[#b53e1d] focus:ring-0 focus:ring-offset-0">
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -241,29 +243,31 @@ const handleSubmit = async (e: React.FormEvent) => {
                     </Select>
                   </div>
                   <div>
-  <Label htmlFor="price">Price *</Label>
-  <Input
-    id="price"
-    name="price"
-    type="number"
-    step="0.01"
-    value={formData.price}
-    onChange={handleInputChange}
-    placeholder="Enter product price"
-    required
-  />
-</div>
+                    <Label htmlFor="price" className="text-gray-900">Price *</Label>
+                    <Input
+                      id="price"
+                      name="price"
+                      type="number"
+                      step="0.01"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      placeholder="Enter product price"
+                      required
+                      className="text-gray-900 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
+                    />
+                  </div>
 
-<div>
-  <Label htmlFor="tags">Tags (comma-separated)</Label>
-  <Input
-    id="tags"
-    name="tags"
-    value={formData.tags}
-    onChange={handleInputChange}
-    placeholder="e.g., modern,wood,minimalist"
-  />
-</div>
+                  <div>
+                    <Label htmlFor="tags" className="text-gray-900">Tags (comma-separated)</Label>
+                    <Input
+                      id="tags"
+                      name="tags"
+                      value={formData.tags}
+                      onChange={handleInputChange}
+                      placeholder="e.g., modern,wood,minimalist"
+                      className="text-gray-900 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
+                    />
+                  </div>
 
 
                   {/* <div className="flex items-center space-x-2">
@@ -280,7 +284,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               {/* Specifications */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Specifications</CardTitle>
+                  <CardTitle className="text-[#14294C]">Specifications</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {specifications.map((spec, index) => (
@@ -289,11 +293,15 @@ const handleSubmit = async (e: React.FormEvent) => {
                         placeholder="Property (e.g., Material)"
                         value={spec.key}
                         onChange={(e) => handleSpecificationChange(index, 'key', e.target.value)}
+                        className="focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
+
                       />
                       <Input
                         placeholder="Value (e.g., Premium Leather)"
                         value={spec.value}
                         onChange={(e) => handleSpecificationChange(index, 'value', e.target.value)}
+                        className="focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
+
                       />
                       {specifications.length > 1 && (
                         <Button
@@ -311,7 +319,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     type="button"
                     variant="outline"
                     onClick={addSpecification}
-                    className="w-full"
+                    className="w-full text-gray-900"
                   >
                     Add Specification
                   </Button>
@@ -323,11 +331,11 @@ const handleSubmit = async (e: React.FormEvent) => {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Product Images *</CardTitle>
+                  <CardTitle className="text-[#14294C]">Product Images *</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="images">Upload Images</Label>
+                    <Label htmlFor="images" className="text-gray-900">Upload Images</Label>
                     <div className="mt-2">
                       <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -335,44 +343,44 @@ const handleSubmit = async (e: React.FormEvent) => {
                           <p className="text-sm text-muted-foreground">Click to upload images</p>
                         </div>
                         <input
-  type="file"
-  className="hidden"
-  multiple
-  accept="image/*"
-  onChange={handleImageUpload}
-/>
+                          type="file"
+                          className="hidden"
+                          multiple
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                        />
 
                       </label>
                     </div>
                   </div>
 
                   {/* Image Preview */}
-                      {/* Image Preview */}
-    {imagePreviews.length > 0 && (
-      <div className="space-y-2">
-        <Label>Uploaded Images</Label>
-        <div className="grid grid-cols-2 gap-2">
-          {imagePreviews.map((src, index) => (
-            <div key={index} className="relative group">
-              <img
-                src={src}
-                alt={`Product ${index + 1}`}
-                className="w-full h-20 object-cover rounded-md"
-              />
-              <Button
-                type="button"
-                variant="destructive"
-                size="sm"
-                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => removeImage(index)}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </div>
-          ))}
-        </div>
-      </div>
-    )}
+                  {/* Image Preview */}
+                  {imagePreviews.length > 0 && (
+                    <div className="space-y-2">
+                      <Label>Uploaded Images</Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {imagePreviews.map((src, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={src}
+                              alt={`Product ${index + 1}`}
+                              className="w-full h-20 object-cover rounded-md"
+                            />
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="sm"
+                              className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => removeImage(index)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                 </CardContent>
               </Card>
@@ -382,7 +390,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 type="submit"
                 variant="hero"
                 size="lg"
-                className="w-full"
+                className="w-full bg-[#b53e1d] hover:bg-[#9f3518] text-white"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (

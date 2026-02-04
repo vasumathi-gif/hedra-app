@@ -109,11 +109,11 @@ export default function FunrifanEnquiry() {
             <section className="p-8 md:p-12">
               <div className="flex items-center gap-3 mb-4">
                 <h1 className="text-3xl font-bold">
-                  <span className="text-slate-800">Funrifan Enquiry</span>
+                  <span className="text-[#14294C]">Funrifan Enquiry</span>
                 </h1>
               </div>
 
-              <p className="text-slate-500 mb-6">
+              <p className="text-gray-500 mb-6">
                 Have a question? Fill out the form below.
               </p>
 
@@ -132,7 +132,7 @@ export default function FunrifanEnquiry() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="name" className="block text-slate-600 mb-2">
+                  <label htmlFor="name" className="block text-gray-600 mb-2">
                     Name
                   </label>
                   <input
@@ -147,7 +147,7 @@ export default function FunrifanEnquiry() {
                 </div>
 
                 <div className="relative">
-                  <label htmlFor="email" className="block text-slate-600 mb-2">
+                  <label htmlFor="email" className="block text-gray-600 mb-2">
                     Email
                   </label>
                   <input
@@ -162,7 +162,7 @@ export default function FunrifanEnquiry() {
                 </div>
 
                 <div className="relative">
-                  <label htmlFor="phone" className="block text-slate-600 mb-2">
+                  <label htmlFor="phone" className="block text-gray-600 mb-2">
                     Phone Number
                   </label>
                   <input
@@ -176,7 +176,7 @@ export default function FunrifanEnquiry() {
                 </div>
 
                 <div>
-                  <label htmlFor="enquiry" className="block text-slate-600 mb-2">
+                  <label htmlFor="enquiry" className="block text-gray-600 mb-2">
                     Your Enquiry
                   </label>
                   <textarea
@@ -191,29 +191,29 @@ export default function FunrifanEnquiry() {
 
                 <button
                   type="submit"
-                  className="w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-60"
+                  className="w-full bg-[#b53e1d] text-white py-3 rounded-lg font-semibold hover:bg-[#b53e1d]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-60"
                   disabled={submitting}
                 >
                   {submitting ? "Submitting..." : "Submit Enquiry"}
                 </button>
               </form>
 
-              <div className="text-center text-slate-600 mt-8">
+              <div className="text-center text-gray-600 mt-8">
                 <p>Or contact us directly:</p>
                 <div className="flex justify-center items-center gap-6 mt-4">
                   <a
                     href="mailto:info@funrifan.com"
-                    className="flex items-center text-slate-500 hover:text-red-500"
+                    className="flex items-center text-gray-500 hover:text-[#b53e1d]"
                   >
                     <span className="material-symbols-outlined mr-2">mail</span>
                     info@edendek.com
                   </a>
                   <a
                     href="tel:+1234567890"
-                    className="flex items-center text-slate-500 hover:text-red-500"
+                    className="flex items-center text-gray-500 hover:text-[#b53e1d]"
                   >
                     <span className="material-symbols-outlined mr-2">call</span>
-                    +1 234 567 890
+                    +91 99624 52447
                   </a>
                 </div>
               </div>

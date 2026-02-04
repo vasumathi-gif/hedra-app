@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate, useNavigate, useParams,useLocation } from 'react-router-dom';
+import { Navigate, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { ArrowLeft, Save, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,12 +22,12 @@ export default function EditProduct() {
   const navigate = useNavigate();
   const token = JSON.parse(localStorage.getItem('adminUser') || '{}')?.token;
   // under other useState lines
-const [initialImages, setInitialImages] = useState<string[]>([]); // images originally from DB
-const [newFiles, setNewFiles] = useState<File[]>([]);             // files selected now
+  const [initialImages, setInitialImages] = useState<string[]>([]); // images originally from DB
+  const [newFiles, setNewFiles] = useState<File[]>([]);             // files selected now
 
- 
-const { state } = useLocation();
-const productId = state?.id; // ✅ this is your id
+
+  const { state } = useLocation();
+  const productId = state?.id; // ✅ this is your id
 
   const [formData, setFormData] = useState({
     name: '',
@@ -36,7 +36,7 @@ const productId = state?.id; // ✅ this is your id
     featured: false,
     price: '',
     tags: '',
-    bestSeller: false, 
+    bestSeller: false,
     specifications: {} as Record<string, string>,
     images: [] as string[]
   });
@@ -58,28 +58,28 @@ const productId = state?.id; // ✅ this is your id
           category: product.category as ProductCategory,
           featured: product.featured || false,
           specifications: product.specifications,
-           bestSeller: product.bestSeller || false,
+          bestSeller: product.bestSeller || false,
           images: product.images,
           price: product.price?.toString() || '',
           tags: product.tags?.join(', ') || ''
-        }); 
+        });
         setInitialImages(product.images || []);
 
         // Convert specifications object to array for editing
-  let specsArray: { key: string; value: string }[] = [];
+        let specsArray: { key: string; value: string }[] = [];
 
-      try {
-        if (typeof product.specifications === 'string') {
-          specsArray = JSON.parse(product.specifications); // parse string
-        } else if (Array.isArray(product.specifications)) {
-          specsArray = product.specifications;
+        try {
+          if (typeof product.specifications === 'string') {
+            specsArray = JSON.parse(product.specifications); // parse string
+          } else if (Array.isArray(product.specifications)) {
+            specsArray = product.specifications;
+          }
+        } catch (e) {
+          console.warn('Failed to parse specifications:', product.specifications);
+          specsArray = [];
         }
-      } catch (e) {
-        console.warn('Failed to parse specifications:', product.specifications);
-        specsArray = [];
-      }
 
-      setSpecifications(specsArray.length > 0 ? specsArray : [{ key: '', value: '' }]);
+        setSpecifications(specsArray.length > 0 ? specsArray : [{ key: '', value: '' }]);
 
       }
       setIsLoading(false);
@@ -149,25 +149,25 @@ const productId = state?.id; // ✅ this is your id
     }
   };
 
-const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const files = e.target.files;
-  if (!files) return;
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
 
-  const arr = Array.from(files);
+    const arr = Array.from(files);
 
-  // store real files for submit
-  setNewFiles(prev => [...prev, ...arr]);
+    // store real files for submit
+    setNewFiles(prev => [...prev, ...arr]);
 
-  // keep your previews
-  const imageUrls = arr.map(file => URL.createObjectURL(file));
-  setFormData(prev => ({
-    ...prev,
-    images: [...prev.images, ...imageUrls]
-  }));
+    // keep your previews
+    const imageUrls = arr.map(file => URL.createObjectURL(file));
+    setFormData(prev => ({
+      ...prev,
+      images: [...prev.images, ...imageUrls]
+    }));
 
-  // allow re-selecting the same file
-  e.currentTarget.value = '';
-};
+    // allow re-selecting the same file
+    e.currentTarget.value = '';
+  };
 
 
   const removeImage = (index: number) => {
@@ -178,86 +178,86 @@ const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   };
 
   const handleBestSellerChange = (checked: boolean) => {
-  setFormData(prev => ({
-    ...prev,
-    bestSeller: checked
-  }));
-};
+    setFormData(prev => ({
+      ...prev,
+      bestSeller: checked
+    }));
+  };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsSubmitting(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
-  try {
-    // --- your existing validations ---
-    if (!formData.name.trim()) throw new Error('Product name is required');
-    if (!formData.description.trim()) throw new Error('Product description is required');
-    if (!formData.category) throw new Error('Product category is required');
-    if (!formData.price || isNaN(Number(formData.price))) throw new Error('Valid price is required');
+    try {
+      // --- your existing validations ---
+      if (!formData.name.trim()) throw new Error('Product name is required');
+      if (!formData.description.trim()) throw new Error('Product description is required');
+      if (!formData.category) throw new Error('Product category is required');
+      if (!formData.price || isNaN(Number(formData.price))) throw new Error('Valid price is required');
 
-    // ✅ figure out which original URLs remain after deletions
-    const imagesToKeep = initialImages.filter(url => formData.images.includes(url));
+      // ✅ figure out which original URLs remain after deletions
+      const imagesToKeep = initialImages.filter(url => formData.images.includes(url));
 
-    // ✅ make sure at least one image will remain (old kept + new added)
-    if (imagesToKeep.length === 0 && newFiles.length === 0) {
-      throw new Error('At least one product image is required');
-    }
-
-    const specsArray = specifications
-      .filter(spec => spec.key.trim() && spec.value.trim())
-      .map(spec => ({ key: spec.key.trim(), value: spec.value.trim() }));
-
-    const tagsArray = formData.tags
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(Boolean);
-
-    const fd = new FormData();
-    fd.append('name', formData.name);
-    fd.append('description', formData.description);
-    fd.append('category', formData.category);
-    fd.append('price', formData.price);
-    fd.append('tags', JSON.stringify(tagsArray));
-    fd.append('specifications', JSON.stringify(specsArray));
-    fd.append('bestSeller', String(formData.bestSeller));
-    fd.append('featured', String(formData.featured));
-
-    // ✅ tell backend exactly which old images to keep
-    fd.append('imagesToKeep', JSON.stringify(imagesToKeep));
-
-    // ✅ send ALL new files (not just one)
-    newFiles.forEach(file => fd.append('newImages', file));
-
-    console.log('--- FormData Payload ---');
-    for (const [key, value] of fd.entries()) {
-      if (value instanceof File) {
-        console.log(`${key}: File(${value.name}, ${value.size} bytes, ${value.type})`);
-      } else {
-        try { console.log(`${key}:`, JSON.parse(value as string)); }
-        catch { console.log(`${key}:`, value); }
+      // ✅ make sure at least one image will remain (old kept + new added)
+      if (imagesToKeep.length === 0 && newFiles.length === 0) {
+        throw new Error('At least one product image is required');
       }
+
+      const specsArray = specifications
+        .filter(spec => spec.key.trim() && spec.value.trim())
+        .map(spec => ({ key: spec.key.trim(), value: spec.value.trim() }));
+
+      const tagsArray = formData.tags
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(Boolean);
+
+      const fd = new FormData();
+      fd.append('name', formData.name);
+      fd.append('description', formData.description);
+      fd.append('category', formData.category);
+      fd.append('price', formData.price);
+      fd.append('tags', JSON.stringify(tagsArray));
+      fd.append('specifications', JSON.stringify(specsArray));
+      fd.append('bestSeller', String(formData.bestSeller));
+      fd.append('featured', String(formData.featured));
+
+      // ✅ tell backend exactly which old images to keep
+      fd.append('imagesToKeep', JSON.stringify(imagesToKeep));
+
+      // ✅ send ALL new files (not just one)
+      newFiles.forEach(file => fd.append('newImages', file));
+
+      console.log('--- FormData Payload ---');
+      for (const [key, value] of fd.entries()) {
+        if (value instanceof File) {
+          console.log(`${key}: File(${value.name}, ${value.size} bytes, ${value.type})`);
+        } else {
+          try { console.log(`${key}:`, JSON.parse(value as string)); }
+          catch { console.log(`${key}:`, value); }
+        }
+      }
+
+      const response = await apiPutRequest(`products/updateProduct/${productId}`, fd, token);
+      console.log('✅ Update response:', response);
+
+      toast({
+        title: 'Product Updated',
+        description: `"${formData.name}" has been updated successfully.`,
+      });
+
+      navigate('/admin/products');
+      window.location.reload();
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Update failed',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const response = await apiPutRequest(`products/updateProduct/${productId}`, fd, token);
-    console.log('✅ Update response:', response);
-
-    toast({
-      title: 'Product Updated',
-      description: `"${formData.name}" has been updated successfully.`,
-    });
-
-    navigate('/admin/products');
-    window.location.reload();
-  } catch (error) {
-    toast({
-      title: 'Error',
-      description: error instanceof Error ? error.message : 'Update failed',
-      variant: 'destructive',
-    });
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
 
 
@@ -282,8 +282,8 @@ const handleSubmit = async (e: React.FormEvent) => {
               Back to Products
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Edit Product</h1>
-              <p className="text-muted-foreground">Update product information and settings</p>
+              <h1 className="text-3xl font-bold text-[#14294C]">Edit Product</h1>
+              <p className="text-gray-900">Update product information and settings</p>
             </div>
           </div>
         </div>
@@ -294,11 +294,11 @@ const handleSubmit = async (e: React.FormEvent) => {
             <div className="lg:col-span-2 space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Basic Information</CardTitle>
+                  <CardTitle className="text-[#14294C]">Basic Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="name">Product Name *</Label>
+                    <Label htmlFor="name" className="text-gray-900">Product Name *</Label>
                     <Input
                       id="name"
                       name="name"
@@ -306,11 +306,12 @@ const handleSubmit = async (e: React.FormEvent) => {
                       onChange={handleInputChange}
                       placeholder="Enter product name"
                       required
+                      className="text-gray-900 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="description">Description *</Label>
+                    <Label htmlFor="description" className="text-gray-900">Description *</Label>
                     <Textarea
                       id="description"
                       name="description"
@@ -319,13 +320,14 @@ const handleSubmit = async (e: React.FormEvent) => {
                       placeholder="Describe the product features, materials, and benefits"
                       rows={4}
                       required
+                      className="text-gray-900 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="category">Category *</Label>
+                    <Label htmlFor="category" className="text-gray-900">Category *</Label>
                     <Select value={formData.category} onValueChange={handleCategoryChange} required>
-                      <SelectTrigger>
+                      <SelectTrigger className="focus:border-[#b53e1d] focus:ring-0 focus:ring-offset-0">
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -338,7 +340,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="price">Price *</Label>
+                    <Label htmlFor="price" className="text-gray-900">Price *</Label>
                     <Input
                       id="price"
                       name="price"
@@ -348,20 +350,22 @@ const handleSubmit = async (e: React.FormEvent) => {
                       onChange={handleInputChange}
                       placeholder="Enter price"
                       required
+                      className="text-gray-900 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="tags">Tags (comma-separated)</Label>
+                    <Label htmlFor="tags" className="text-gray-900">Tags (comma-separated)</Label>
                     <Input
                       id="tags"
                       name="tags"
                       value={formData.tags}
                       onChange={handleInputChange}
                       placeholder="e.g. modern,wood,minimalist"
+                      className="text-gray-900 focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
-{/* 
+                  {/* 
 
                   <div className="flex items-center space-x-2">
                     <Switch
@@ -377,7 +381,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               {/* Specifications */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Specifications</CardTitle>
+                  <CardTitle className="text-[#14294C]">Specifications</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {specifications.map((spec, index) => (
@@ -386,11 +390,14 @@ const handleSubmit = async (e: React.FormEvent) => {
                         placeholder="Property (e.g., Material)"
                         value={spec.key}
                         onChange={(e) => handleSpecificationChange(index, 'key', e.target.value)}
+                        className="focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
                       />
                       <Input
                         placeholder="Value (e.g., Premium Leather)"
                         value={spec.value}
                         onChange={(e) => handleSpecificationChange(index, 'value', e.target.value)}
+                        className="focus:border-[#b53e1d] focus-visible:ring-0 focus-visible:ring-offset-0"
+
                       />
                       {specifications.length > 1 && (
                         <Button
@@ -408,20 +415,20 @@ const handleSubmit = async (e: React.FormEvent) => {
                     type="button"
                     variant="outline"
                     onClick={addSpecification}
-                    className="w-full"
+                    className="w-full text-gray-900"
                   >
                     Add Specification
                   </Button>
                 </CardContent>
               </Card>
               <div className="flex items-center space-x-2">
-  <Switch
-    id="bestSeller"
-    checked={formData.bestSeller}
-    onCheckedChange={handleBestSellerChange}
-  />
-  <Label htmlFor="bestSeller">Best Seller Product</Label>
-</div>
+                <Switch
+                  id="bestSeller"
+                  checked={formData.bestSeller}
+                  onCheckedChange={handleBestSellerChange}
+                />
+                <Label htmlFor="bestSeller">Best Seller Product</Label>
+              </div>
 
             </div>
 
@@ -429,11 +436,11 @@ const handleSubmit = async (e: React.FormEvent) => {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Product Images *</CardTitle>
+                  <CardTitle className="text-[#14294C]">Product Images *</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="images">Upload Images</Label>
+                    <Label htmlFor="images" className="text-gray-900">Upload Images</Label>
                     <div className="mt-2">
                       <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -485,7 +492,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 type="submit"
                 variant="hero"
                 size="lg"
-                className="w-full"
+               className="w-full bg-[#b53e1d] hover:bg-[#9f3518] text-white"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (

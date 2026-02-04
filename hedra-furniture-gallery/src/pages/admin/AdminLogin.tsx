@@ -60,7 +60,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-hero">
+    <div className="min-h-screen flex items-center justify-center bg-[linear-gradient(90deg,#293654_0%,#88747B_50%,#B78A83_100%)]">
       <div className="w-full max-w-md px-4">
         <Card className="shadow-elegant">
           <CardHeader className="text-center">
@@ -69,14 +69,14 @@ export default function AdminLogin() {
                  <img src={edendekLogo} alt="Edendek logo" className="block h-8 w-auto" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
-            <p className="text-muted-foreground">Access the Edendek admin panel</p>
+            <CardTitle className="text-2xl font-bold text-[#14294C]">Admin Login</CardTitle>
+            <p className="text-gray-500">Access the Edendek admin panel</p>
           </CardHeader>
 
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">
                   Email Address
                 </label>
                 <Input
@@ -92,7 +92,7 @@ export default function AdminLogin() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-900 mb-2">
                   Password
                 </label>
                 <div className="relative">
@@ -125,7 +125,7 @@ export default function AdminLogin() {
                 type="submit"
                 variant="hero"
                 size="lg"
-                className="w-full"
+                  className="w-full bg-[#b53e1d] hover:bg-[#9f3518] text-white"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -144,8 +144,8 @@ export default function AdminLogin() {
 
             {/* Admin Info Note */}
             <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-              <h4 className="text-sm font-medium text-foreground mb-2">Admin Access Only</h4>
-              <div className="text-sm text-muted-foreground space-y-1">
+              <h4 className="text-sm font-medium text-gray-900 mb-2">Admin Access Only</h4>
+              <div className="text-sm text-muted-gray-500 space-y-1">
                 <p>This login is reserved for Edendek admins. Please use valid credentials to proceed.</p>
               </div>
             </div>

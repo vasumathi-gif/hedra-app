@@ -208,7 +208,7 @@ export default function ProductDetail() {
               <div className="space-y-6">
                 <div>
                   <div className="flex items-center gap-3 mb-3">
-                    <Badge variant="secondary" className="capitalize">
+                    <Badge variant="secondary" className="capitalize bg-[#14294C] hover:bg-[#14294C]" >
                       {product.category.replace('-', ' ')}
                     </Badge>
                     {product.featured && (
@@ -218,15 +218,15 @@ export default function ProductDetail() {
                     )}
                   </div>
 
-                  <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                  <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                     {product.name}
                   </h1>
 
-                  <p className="text-lg text-muted-foreground leading-relaxed">
+                  <p className="text-lg text-gray-500 leading-relaxed">
                     {product.description}
                   </p>
                   {/* Price */}
-                  <p className="text-xl font-semibold text-foreground mt-2">
+                  <p className="text-xl font-semibold text-gray-900 mt-2">
                     ₹ {product.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
@@ -234,7 +234,7 @@ export default function ProductDetail() {
                 {/* Actions */}
                 <div className="flex gap-4">
                   <Link to="/contact" className="flex-1">
-                    <Button variant="hero" size="lg" className="w-full">
+                    <Button variant="hero" size="lg" className="w-full bg-[#b53e1d] hover:bg-[#9f3518] text-white">
                       Request Quote
                     </Button>
                   </Link>
@@ -249,7 +249,7 @@ export default function ProductDetail() {
                 {/* Specifications */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Specifications</CardTitle>
+                    <CardTitle className='text-gray-900'>Specifications</CardTitle>
                   </CardHeader>
                   <CardContent>
                     {specPairs.length === 0 ? (
@@ -261,8 +261,8 @@ export default function ProductDetail() {
                             key={`${label}-${i}`}
                             className="flex justify-between border-b border-border pb-2 last:border-b-0"
                           >
-                            <dt className="font-medium text-foreground">{label}</dt>
-                            <dd className="text-muted-foreground">{val}</dd>
+                            <dt className="font-medium text-gray-900">{label}</dt>
+                            <dd className="text-gray-500">{val}</dd>
                           </div>
                         ))}
                       </dl>
@@ -274,9 +274,9 @@ export default function ProductDetail() {
                 {product.tags && product.tags.length > 0 && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>Tags</CardTitle>
+                      <CardTitle className='text-gray-900'>Tags</CardTitle>
                     </CardHeader>
-                    <CardContent className="flex flex-wrap gap-2">
+                    <CardContent className="flex flex-wrap gap-2 text-gray-900">
                       {product.tags.map((tag, index) => (
                         <Badge key={index} variant="outline" className="capitalize">
                           {tag}
@@ -292,12 +292,12 @@ export default function ProductDetail() {
                   <CardContent className="pt-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                       <div>
-                        <h4 className="font-medium text-foreground mb-2">Quality Guarantee</h4>
-                        <p className="text-muted-foreground">All our furniture comes with a comprehensive quality guarantee.</p>
+                        <h4 className="font-medium text-gray-900 mb-2">Quality Guarantee</h4>
+                        <p className="text-gray-500">All our furniture comes with a comprehensive quality guarantee.</p>
                       </div>
                       <div>
-                        <h4 className="font-medium text-foreground mb-2">Custom Options</h4>
-                        <p className="text-muted-foreground">Available for customization to fit your specific requirements.</p>
+                        <h4 className="font-medium text-gray-900 mb-2">Custom Options</h4>
+                        <p className="text-gray-500">Available for customization to fit your specific requirements.</p>
                       </div>
                     </div>
                   </CardContent>
