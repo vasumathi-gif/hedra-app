@@ -1,5 +1,3 @@
-
-
 // src/pages/CategoryProducts.tsx
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
@@ -34,51 +32,90 @@ const SUBCATEGORY_MAP: Record<
 > = {
   // SOFA
   "sofa": [
-    { value: "sofa",               label: "All Sofas" },
-    { value: "sofa-1-seater",      label: " Single Seater" },
-    { value: "sofa-2-seater",      label: " Two-Seater" },
-    { value: "sofa-3-seater",      label: " Three-Seater" },
-    { value: "sofa-4-seater-plus", label: " Four-Seater" },
-    { value: "sofa-corner",        label: "Corner Sofas" },
-    { value: "sofa-modular",       label: "Modular Sofas" },
-    { value: "sofa-lounge",        label: "Lounge Sofas" },
-    { value: "sofa-recliner",      label: "Recliners" },
-  ],
+  { value: "sofa",               label: "All Sofas" },
+  { value: "sofa-1-seater",      label: "Single Seater" },
+  { value: "sofa-2-seater",      label: "Two-Seater Sofas" },
+  { value: "sofa-3-seater",      label: "Three-Seater Sofas" },
+  { value: "sofa-4-seater-plus", label: "Four-Seater Sofas" },
+  { value: "sofa-5-seater",      label: "Five-Seater Sofas" },
+  { value: "sofa-6-plus",        label: "Six-Seater & More" },
+  { value: "sofa-corner",        label: "Corner Sofas" },
+  { value: "sofa-sectional",     label: "Sectional Sofas" },
+  { value: "sofa-modular",       label: "Modular Sofas" },
+  { value: "sofa-lounge",        label: "Lounge Sofas" },
+  { value: "sofa-recliner",      label: "Recliner Sofas" },
+  { value: "sofa-chairs",        label: "Sofa Chairs" },
+  { value: "sofa-outdoor",       label: "Outdoor Sofas" },
+  { value: "sofa-new",           label: "New Launches" },
+  { value: "sofa-best-sellers",  label: "Best Sellers" },
+],
 
   // CENTER TABLES
-  "center-tables": [
-    { value: "center-tables",           label: "All Center Tables" },
-    { value: "center-tables-rectangular", label: "Rectangular Tables" },
-    { value: "center-tables-oval",        label: "Oval Tables" },
-    { value: "center-tables-circular",    label: "Circular Tables" },
-  ],
+ "coffee-tables": [
+  { value: "coffee-tables", label: "All Tables" },
+  { value: "coffee-tables-rectangular-square", label: "Rectangular & Square Tables" },
+  { value: "coffee-tables-oval-circular", label: "Oval & Circular Tables" },
+  { value: "coffee-tables-storage", label: "Coffee Tables with Storage" },
+  { value: "coffee-tables-modern", label: "Modern Tables" },
+  { value: "coffee-tables-new", label: "New Launches" },
+],
 
   // BEDS
   "bed": [
-    { value: "bed",                 label: "All Beds" },
-    { value: "bed-regular",         label: "Regular Beds" },
-    { value: "bed-storage",         label: "Beds with Storage" },
-    { value: "bed-bedside-tables",  label: "Bedside Tables" },
-    { value: "bed-stools",          label: "Bedroom Stools" },
-    { value: "bed-dressing-chairs", label: "Dressing Table Chairs" },
-  ],
+  { value: "bed", label: "All Beds" },
+  { value: "bed-upholstered", label: "Upholstered Beds" },
+  { value: "bed-wooden", label: "Wooden Beds" },
+  { value: "bed-premium", label: "Premium Models" },
+  { value: "bed-storage", label: "Beds with Storage" },
+  { value: "bed-stools", label: "Bedroom Stools" },
+  { value: "bed-bench", label: "Bedroom Bench" },
+  { value: "bed-makeup-chairs", label: "Makeup Chairs" },
+  { value: "bed-new", label: "New Launches" },
+  { value: "bed-best-sellers", label: "Best Sellers" },
+],
+
+// OTTOMANS
+"ottomans": [
+  { value: "ottomans", label: "All Ottomans & Benches" },
+  { value: "ottomans-poufs", label: "Poufs" },
+  { value: "ottomans-upholstered", label: "Upholstered Ottomans" },
+  { value: "ottomans-benches", label: "Benches" },
+  { value: "ottomans-bench-storage", label: "Bench with Storage" },
+  { value: "ottomans-bedroom", label: "Bedroom Ottomans" },
+  { value: "ottomans-foot-stools", label: "Foot Stools" },
+  { value: "ottomans-new", label: "New Launches" },
+  { value: "ottomans-best-sellers", label: "Best Sellers" },
+],
 
   // DINING TABLES
   "dining-table": [
-    { value: "dining-table",           label: "All Dining Tables" },
-    { value: "dining-table-rectangular", label: "Rectangular" },
-    { value: "dining-table-circular",    label: "Circular" },
-    { value: "dining-table-oval",        label: "Oval" },
-  ],
+  { value: "dining-table", label: "All Dining Tables" },
+  { value: "dining-table-rectangular", label: "Rectangular" },
+  { value: "dining-table-circular", label: "Circular" },
+  { value: "dining-table-oval", label: "Oval" },
+],
+// CHAIRS
+"chairs": [
+  { value: "chairs", label: "All Chairs & Stools" },
+  { value: "chairs-dining", label: "Dining Chairs" },
+  { value: "chairs-study", label: "Study Chairs" },
+  { value: "chairs-sofa", label: "Sofa Chairs" },
+  { value: "chairs-swivel", label: "Swivel Chairs" },
+  { value: "chairs-lounge", label: "Lounge Chairs" },
+  { value: "chairs-makeup", label: "Makeup Chairs" },
+  { value: "chairs-bar-stools", label: "Bar Stools" },
+],
 
-  // OFFICE TABLES
-  "office-tables": [
-    { value: "office-tables",          label: "All Tables" },
-    { value: "office-tables-boss",     label: "Boss Tables" },
-    { value: "office-tables-conference", label: "Conference Room" },
-    { value: "office-tables-work-desks", label: "Work Desks" },
-    { value: "office-tables-center",     label: "Center Tables" },
-  ],
+ 
+// OFFICE TABLES
+"office-tables": [
+  { value: "office-tables", label: "All Office Tables" },
+  { value: "office-tables-boss", label: "Boss Tables" },
+  { value: "office-tables-conference", label: "Conference Room Tables" },
+  { value: "office-tables-work", label: "Work Tables" },
+  { value: "office-tables-center", label: "Center Tables" },
+  { value: "office-tables-height-adjustable", label: "Height Adjustable Tables" },
+],
 };
 
 const PLACEHOLDER = "/placeholder.jpg";

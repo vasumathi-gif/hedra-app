@@ -3,7 +3,14 @@
 @tailwind utilities;
 
 /* Hedra Fabrications Furniture Catalog Design System */
-
+.hero-prev,
+.hero-next {
+  color: #ffffff !important;
+}
+.hero-prev::after,
+.hero-next::after {
+  font-size: 28px;    /* ARROW ICON SIZE */
+}
 @layer base {
   :root {
     /* Background & Surface Colors */

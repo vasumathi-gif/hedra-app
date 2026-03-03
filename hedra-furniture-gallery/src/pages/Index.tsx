@@ -10,7 +10,8 @@ import heroImage from '@/assets/hero-furniture.jpg';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/autoplay';
-import { Autoplay } from 'swiper/modules';
+import "swiper/css/navigation";
+import { Autoplay, Navigation } from 'swiper/modules';
 import FadeInSection from '@/components/ui/FadeInSection';
 import { ChevronRight } from "lucide-react";
 import manufacturerIcon from "../assets/icons/manufacturing.png";
@@ -27,6 +28,7 @@ import {
   Handshake,
   HeartHandshake,
 } from "lucide-react";
+
 
 // put near the top of the file
 // Scales with CSS width (recommended)
@@ -505,67 +507,77 @@ const Index = () => {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative min-h-[70vh]">
-          <Swiper
-            slidesPerView={1}
-            loop={true}
-            speed={1200}
-            autoplay={{
-              delay: 3500,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: false,
-            }}
-            modules={[Autoplay]}
-            className="h-full"
-          >
-            {heroSlides.map((slide) => (
-              <SwiperSlide key={slide.id}>
-                <div
-                  className="relative min-h-[70vh] flex items-center justify-center bg-cover bg-center"
-                  style={{ backgroundImage: `url(${slide.image})` }}
-                >
-                  <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(20,41,76,0.68),rgba(181,62,28,0.35))]" />
+          <div className="relative">
+            <Swiper
+              slidesPerView={1}
+              loop
+              speed={1200}
+              autoplay={{ delay: 3500, disableOnInteraction: false }}
+              navigation={{
+                prevEl: ".hero-prev",
+                nextEl: ".hero-next",
+              }}
+              modules={[Autoplay, Navigation]}
+              className="h-full"
+
+            >
 
 
-                  <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
-                    <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-                      {slide.title}
-                      <span className="block text-accent">{slide.highlight}</span>
-                    </h1>
-                    <p className="text-xl md:text-2xl text-white/90 mb-8 animate-slide-up">
-                      {slide.description}
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
-                      <Link to="/catalog">
-                        <Button
-                          variant="hero"
-                          size="lg"
-                          className="w-full sm:w-auto bg-[#14294C] text-white hover:bg-[#0F1F3A]"
-                        >
-                          Explore Catalog
-                          <ArrowRight className="ml-2 h-5 w-5" />
-                        </Button>
-                      </Link>
-                      <Link to="/contact">
-                        <Button
-                          variant="elegant"
-                          size="lg"
-                          className="w-full sm:w-auto bg-[#b53e1d] text-white hover:bg-[#9E3518]"
-                        >
-                          Get Consultation
-                        </Button>
-                      </Link>
+              {heroSlides.map((slide) => (
+                <SwiperSlide key={slide.id}>
+                  <div
+                    className="relative min-h-[70vh] flex items-center justify-center bg-cover bg-center"
+                    style={{ backgroundImage: `url(${slide.image})` }}
+                  >
+                    <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(20,41,76,0.68),rgba(181,62,28,0.35))]" />
+
+
+                    <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
+                      <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
+                        {slide.title}
+                        <span className="block text-accent">{slide.highlight}</span>
+                      </h1>
+                      <p className="text-xl md:text-2xl text-white/90 mb-8 animate-slide-up">
+                        {slide.description}
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
+                        <Link to="/catalog">
+                          <Button
+                            variant="hero"
+                            size="lg"
+                            className="w-full sm:w-auto bg-[#14294C] text-white hover:bg-[#0F1F3A]"
+                          >
+                            Explore Catalog
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                          </Button>
+                        </Link>
+                        <Link to="/contact">
+                          <Button
+                            variant="elegant"
+                            size="lg"
+                            className="w-full sm:w-auto bg-[#b53e1d] text-white hover:bg-[#9E3518]"
+                          >
+                            Get Consultation
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            {/* LEFT ARROW */}
+            <button className="hero-prev swiper-button-prev " />
+
+            {/* RIGHT ARROW */}
+            <button className="hero-next swiper-button-next" />
+          </div>
         </section>
 
 
         {/* CATEGORIES PREVIEW (Hedra Fabrications style, 5 + 4) */}
         <FadeInSection delay={0.08}>
-          <section className="py-14  bg-gray-200">
+          <section className="py-14 bg-muted/30">
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -603,7 +615,7 @@ const Index = () => {
               <div className="max-w-6xl mx-auto rounded-xl bg-white">
                 {/* ----------- Why Choose Us ----------- */}
                 <div className="text-center mb-12">
-                  <h2 className="text-3xl md:text-4xl font-bold !text-[#14294C]">Why Choose Us</h2>
+                  <h2 className="text-3xl md:text-4xl font-bold !text-[#14294C]">About Us</h2>
                   <p className="mt-3 text-gray-900 max-w-2xl mx-auto">
                     We are not resellers. We are direct manufacturers with control over every stage of production.
                     This ensures competitive pricing, faster timelines, and a consistent standard of quality.
@@ -644,69 +656,62 @@ const Index = () => {
         <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
 
 
-        {/* ----------------- Block 2: 5 Key Points (separate fade) ----------------- */}
-        <FadeInSection delay={0.2}>
-          <section className="pt-10 pb-12 bg-white">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="max-w-6xl mx-auto">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 text-center">
-                  {[
-                    {
-                      icon: <Truck className="h-6 w-6 text-[#b53e1d]" />,
-                      title: "Faster Delivery",
-                      desc: "Our streamlined supply chain ensures products reach you quickly and safely.",
-                    },
-                    {
-                      icon: <DollarSign className="h-6 w-6 text-[#b53e1d]" />,
-                      title: "Affordable Prices",
-                      desc: "By cutting out middlemen, we keep costs lower without compromising quality.",
-                    },
-                    {
-                      icon: <ShieldCheck className="h-6 w-6 text-[#b53e1d]" />,
-                      title: "Quality Assurance",
-                      desc: "Every product is checked and verified before it reaches your doorstep.",
-                    },
-                    {
-                      icon: <Handshake className="h-6 w-6 text-[#b53e1d]" />,
-                      title: "Trusted Service",
-                      desc: "We have a strong track record of reliability and customer satisfaction.",
-                    },
-                    {
-                      icon: <HeartHandshake className="h-6 w-6 text-[#b53e1d]" />,
-                      title: "Customer First",
-                      desc: "Your feedback drives us — we tailor our services to match your needs.",
-                    },
-                  ].map((point, idx) => (
-                    <div
-                      key={idx}
-                      className="px-4 flex flex-col items-center"
-                      style={{ transitionDelay: `${idx * 60}ms` }} // small stagger
-                    >
-                      <div className="h-14 w-14 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
-                        {point.icon}
-                      </div>
-                      <h3 className="text-lg font-semibold text-[#14294C] mb-3">{point.title}</h3>
-                      <p className="text-sm text-gray-900 leading-relaxed">{point.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        </FadeInSection>
-
-
-        {/* ----------------- Block: Benefits of purchasing from Edendek ----------------- */}
         <FadeInSection delay={0.15}>
-          <section className="py-16 bg-gray-200">
+          <section className="py-16 bg-muted/30">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-10">
+
+                {/* ---------- Benefits Heading ---------- */}
+                <div className="text-center mb-12">
                   <h2 className="text-3xl md:text-4xl font-bold text-[#14294C]">
                     Benefits of purchasing from Edendek
                   </h2>
                 </div>
 
+                {/* ---------- Icons ---------- */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 text-center mb-16">
+                  {[
+                    {
+                      icon: <Truck className="h-6 w-6 text-[#b53e1d]" />,
+                      title: "Faster Delivery",
+                      desc: "Products reach you quickly and safely.",
+                    },
+                    {
+                      icon: <DollarSign className="h-6 w-6 text-[#b53e1d]" />,
+                      title: "Affordable Prices",
+                      desc: "Lower costs by cutting out middlemen.",
+                    },
+                    {
+                      icon: <ShieldCheck className="h-6 w-6 text-[#b53e1d]" />,
+                      title: "Quality Assurance",
+                      desc: "Every product is verified before delivery.",
+                    },
+                    {
+                      icon: <Handshake className="h-6 w-6 text-[#b53e1d]" />,
+                      title: "Trusted Service",
+                      desc: "Proven reliability and satisfaction.",
+                    },
+                    {
+                      icon: <HeartHandshake className="h-6 w-6 text-[#b53e1d]" />,
+                      title: "Customer First",
+                      desc: "Services tailored to your needs.",
+                    },
+                  ].map((point, idx) => (
+                    <div key={idx} className="px-4 flex flex-col items-center">
+                      <div className="h-14 w-14 rounded-full bg-white flex items-center justify-center mb-6">
+                        {point.icon}
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#14294C] mb-2">
+                        {point.title}
+                      </h3>
+                      <p className="text-sm text-gray-900">
+                        {point.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* ---------- Benefit Points ---------- */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 md:gap-x-6 lg:gap-x-10">
                   {/* Left */}
                   <div className="md:pr-6 lg:pr-10">
@@ -715,7 +720,7 @@ const Index = () => {
                     </h3>
 
 
-                    <ul className="space-y-5">
+                    <ul className="space-y-4">
                       {[
                         { title: "Unlimited Customization", desc: "Bring Any Design to Life.", icon: BenefitIcons.customization },
                         { title: "Extensive Material Selection", desc: "1200+ Fabric & Leatherette colour Options.", icon: BenefitIcons.materials },
@@ -728,7 +733,7 @@ const Index = () => {
                           <span
                             className="
                       mt-0.5 inline-flex h-9 w-9 md:h-10 md:w-10 shrink-0 items-center justify-center
-                      rounded-md bg-[#EEF1FF] text-[#b53e1d]
+                      rounded-md bg-white text-[#b53e1d]
                       [&>svg]:h-5 [&>svg]:w-5 md:[&>svg]:h-6 md:[&>svg]:w-6
                     "
                           >
@@ -750,7 +755,7 @@ const Index = () => {
                       For Bulk Purchasers &amp; Corporate Clients
                     </h3>
 
-                    <ul className="space-y-5">
+                    <ul className="space-y-4">
                       {[
                         { title: "Significant Cost Savings", desc: "by Cutting Out the Middleman.", icon: BenefitIcons.savings },
                         { title: "Fully Customize Designs", desc: "Fabrics, and Branding.", icon: BenefitIcons.customize },
@@ -763,7 +768,7 @@ const Index = () => {
                           <span
                             className="
                       mt-0.5 inline-flex h-9 w-9 md:h-10 md:w-10 shrink-0 items-center justify-center
-                      rounded-md bg-[#EEF1FF] text-[#b53e1d]
+                      rounded-md bg-white text-[#b53e1d]
                       [&>svg]:h-5 [&>svg]:w-5 md:[&>svg]:h-6 md:[&>svg]:w-6
                     "
                           >
@@ -780,10 +785,12 @@ const Index = () => {
                   </div>
 
                 </div>
+
               </div>
             </div>
           </section>
         </FadeInSection>
+
 
 
 
@@ -906,7 +913,7 @@ const Index = () => {
 
         {/* --- CLIENT TESTIMONIALS --- */}
         <FadeInSection delay={0.15}>
-          <section className="py-16 bg-gray-200" id="client-testimonials">
+          <section className="py-16 bg-muted/30" id="client-testimonials">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
               {/* Header */}
               <div className="text-center mb-12">

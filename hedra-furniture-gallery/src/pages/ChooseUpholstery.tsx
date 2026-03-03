@@ -84,11 +84,11 @@ export default function ChooseUpholstery() {
               <motion.p variants={item} className="text-sm uppercase tracking-widest text-gray-600 mb-3">
                 Pick Your Color and Texture
               </motion.p>
-              <motion.h2 variants={item} className="text-2xl md:text-3xl lg:text-4xl font-semibold text-[#14294C] mb-3">
+              <motion.h2 variants={item} className="text-4xl md:text-5xl font-bold text-[#14294C] mb-4">
                 Customise Your Furniture
               </motion.h2>
               <motion.div variants={item} className="w-10 h-[2px] bg-[#14294C] mx-auto mb-6" />
-              <motion.p variants={item} className="text-sm md:text-base text-gray-900 max-w-3xl mx-auto leading-relaxed">
+              <motion.p variants={item} className="text-lg text-gray-900 max-w-2xl mx-auto">
                 Edendek offers a wide variety of upholstery options. Pick from our collection of plain fabrics,
                 printed fabrics, and leatherette. We’ve curated the best for your furniture.
               </motion.p>

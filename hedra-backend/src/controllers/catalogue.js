@@ -56,7 +56,9 @@ export const createCatalogue = async (req, res) => {
 
     const imageUrl = await uploadImageToImgBB(image.path);
     const brandLogoUrl = brandLogo ? await uploadImageToImgBB(brandLogo.path) : null;
-    const pdfUrl = pdf ? `/${String(pdf.path).replace(/\\/g, "/")}` : null;
+    // const pdfUrl = pdf ? `/${String(pdf.path).replace(/\\/g, "/")}` : null;
+    const pdfUrl = pdf ? await uploadImageToImgBB(pdf.path) : null;
+
 
     const code = await nextCatalogueCode();
 

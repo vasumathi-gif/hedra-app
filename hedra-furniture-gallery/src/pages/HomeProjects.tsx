@@ -1,10 +1,35 @@
 import React from 'react';
+import { motion, Variants } from "framer-motion";
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import heroImage from '@/assets/hero-furniture.jpg';
 import Base from '@/assets/BASE.jpg';
+
+
+const container: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.45, // ⬅ controls gap between heading, line, text
+    },
+  },
+};
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 1.1, // ⬅ slow animation
+      ease: [0.16, 1, 0.3, 1], // premium smooth
+    },
+  },
+};
+
+
 const projects = [
   {
     id: '1',
@@ -44,17 +69,40 @@ export default function HomeProjects() {
         {/* Page Header */}
         <section className="bg-muted/30 py-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-[#14294C] mb-4">
+            <motion.div
+              className="text-center"
+              variants={container}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+            >
+              {/* Heading */}
+              <motion.h1
+                variants={item}
+                className="text-4xl md:text-5xl font-bold text-[#14294C] mb-4"
+              >
                 Home Projects
-              </h1>
-              <p className="text-lg text-gray-900 max-w-2xl mx-auto">
+              </motion.h1>
+
+              {/* Line */}
+              <motion.div
+                variants={item}
+                className="w-10 h-[2px] bg-[#14294C] mx-auto mb-6"
+              />
+
+              {/* Paragraph */}
+              <motion.p
+                variants={item}
+                className="text-lg text-gray-900 max-w-2xl mx-auto"
+              >
                 Explore our portfolio of completed projects that showcase our craftsmanship
                 and attention to detail across various spaces and industries.
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
           </div>
         </section>
+
+
 
         {/* Projects Grid */}
         <section className="py-16">
@@ -72,7 +120,7 @@ export default function HomeProjects() {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-3">
                       <Badge variant="secondary"
-                       className="bg-[#b53e1d] text-white hover:bg-[#b53e1d]/90">{project.category}</Badge>
+                        className="bg-[#b53e1d] text-white hover:bg-[#b53e1d]/90">{project.category}</Badge>
                       <span className="text-sm text-gray-500">{project.year}</span>
                     </div>
 

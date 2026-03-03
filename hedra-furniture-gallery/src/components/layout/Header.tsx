@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Phone, Mail, ChevronDown, ChevronRight } from "lucide-react";
@@ -19,96 +18,144 @@ const navigation = [
           {
             title: "HOME",
             items: [
+             {
+  name: "Sofas",
+  href: "/sofa",
+  subItems: [
+    { name: "All Sofas", href: "/sofa" },
+    { name: "Single Seater", href: "/sofa-1-seater" },
+    { name: "Two-Seater Sofas", href: "/sofa-2-seater" },
+    { name: "Three-Seater Sofas", href: "/sofa-3-seater" },
+    { name: "Four-Seater Sofas", href: "/sofa-4-seater-plus" },
+    { name: "Five-Seater Sofas", href: "/sofa-5-seater" },
+    { name: "Six-Seater & More", href: "/sofa-6-plus" },
+    { name: "Corner Sofas", href: "/sofa-corner" },
+    { name: "Sectional Sofas", href: "/sofa-sectional" },
+    { name: "Modular Sofas", href: "/sofa-modular" },
+    { name: "Lounge Sofas", href: "/sofa-lounge" },
+    { name: "Recliner Sofas", href: "/sofa-recliner" },
+    { name: "Sofa Chairs", href: "/sofa-chairs" },
+    { name: "Outdoor Sofas", href: "/sofa-outdoor" },
+    { name: "New Launches", href: "/sofa-new" },
+    { name: "Best Sellers", href: "/sofa-best-sellers" },
+  ],
+},
+             {
+  name: "Coffee Tables",
+  href: "/coffee-tables",
+  subItems: [
+    { name: "All Tables", href: "/coffee-tables" },
+    { name: "Rectangular & Square Tables", href: "/coffee-tables-rectangular-square" },
+    { name: "Oval & Circular Tables", href: "/coffee-tables-oval-circular" },
+    { name: "Coffee Tables with Storage", href: "/coffee-tables-storage" },
+    { name: "Modern Tables", href: "/coffee-tables-modern" },
+    { name: "New Launches", href: "/coffee-tables-new" },
+  ],
+},
               {
-                name: "Sofas",
-                href: "/sofa",
-                subItems: [
-                  { name: " Single Seater", href: "/sofa-1-seater" },
-                  { name: " Two-Seater", href: "/sofa-2-seater" },
-                  { name: " Three-Seater", href: "/sofa-3-seater" },
-                  { name: " Four-Seater", href: "/sofa-4-seater-plus" },
-                  { name: "Corner Sofas", href: "/sofa-corner" },
-                  { name: "Modular Sofas", href: "/sofa-modular" },
-                  { name: "Lounge Sofas", href: "/sofa-lounge" }, // fixed
-                  { name: "Recliners", href: "/sofa-recliner" },
-                ],
-              },
+  name: "Beds",
+  href: "/bed",
+  subItems: [
+    { name: "All Beds", href: "/bed" },
+    { name: "Upholstered Beds", href: "/bed-upholstered" },
+    { name: "Wooden Beds", href: "/bed-wooden" },
+    { name: "Premium Models", href: "/bed-premium" },
+    { name: "Beds with Storage", href: "/bed-storage" },
+    { name: "Bedroom Stools", href: "/bed-stools" },
+    { name: "Bedroom Bench", href: "/bed-bench" },
+    { name: "Makeup Chairs", href: "/bed-makeup-chairs" },
+    { name: "New Launches", href: "/bed-new" },
+    { name: "Best Sellers", href: "/bed-best-sellers" },
+  ],
+},
+             {
+  name: "Ottomans",
+  href: "/ottomans",
+  subItems: [
+    { name: "All Ottomans & Benches", href: "/ottomans" },
+    { name: "Poufs", href: "/ottomans-poufs" },
+    { name: "Upholstered Ottomans", href: "/ottomans-upholstered" },
+    { name: "Benches", href: "/ottomans-benches" },
+    { name: "Bench with Storage", href: "/ottomans-bench-storage" },
+    { name: "Bedroom Ottomans", href: "/ottomans-bedroom" },
+    { name: "Foot Stools", href: "/ottomans-foot-stools" },
+    { name: "New Launches", href: "/ottomans-new" },
+    { name: "Best Sellers", href: "/ottomans-best-sellers" },
+  ],
+},
+             {
+  name: "Dining Tables",
+  href: "/dining-table",
+  subItems: [
+    { name: "All Models", href: "/dining-table" },
+    { name: "Four Seater Dining Tables", href: "/dining-table-4-seater" },
+    { name: "Six-Seater Dining Tables", href: "/dining-table-6-seater" },
+    { name: "Ten-Seater Dining Tables", href: "/dining-table-10-seater" },
+    { name: "Dining Table Frames", href: "/dining-table-frames" },
+  ],
+},
               {
-                name: "Center Tables",
-                href: "/center-tables",
-                subItems: [
-                  { name: "Rectangular Tables", href: "/center-tables-rectangular" },
-                  { name: "Oval Tables", href: "/center-tables-oval" },
-                  { name: "Circular Tables", href: "/center-tables-circular" }, // fixed
-                ],
-              },
-              {
-                name: "Beds",
-                href: "/bed",
-                subItems: [
-                  { name: "Regular Beds", href: "/bed-regular" },
-                  { name: "Beds with Storage", href: "/bed-storage" },
-                  { name: "Bedside Tables", href: "/bed-bedside-tables" },
-                  { name: "Bedroom Stools", href: "/bed-stools" },
-                  { name: "Dressing Table Chairs", href: "/bed-dressing-chairs" },
-                ],
-              },
-              { name: "Pouffes", href: "/pouffes" },
-              {
-                name: "Dining Tables",
-                href: "/dining-table",
-                subItems: [
-                  { name: "Rectangular", href: "/dining-table-rectangular" },
-                  { name: "Circular", href: "/dining-table-circular" },
-                  { name: "Oval", href: "/dining-table-oval" },
-                ],
-              },
-              { name: "Dining Chairs", href: "/dining-chairs" },
-              { name: "Study Chairs", href: "/study-chairs" },
+  name: "Chairs",
+  href: "/chairs",
+  subItems: [
+    { name: "All Chairs & Stools", href: "/chairs" },
+    { name: "Dining Chairs", href: "/chairs-dining" },
+    { name: "Study Chairs", href: "/chairs-study" },
+    { name: "Sofa Chairs", href: "/chairs-sofa" },
+    { name: "Swivel Chairs", href: "/chairs-swivel" },
+    { name: "Lounge Chairs", href: "/chairs-lounge" },
+    { name: "Makeup Chairs", href: "/chairs-makeup" },
+    { name: "Bar Stools", href: "/chairs-bar-stools" },
+  ],
+},
             ],
           },
         ],
       },
       {
         sections: [
-          {
-            title: "OFFICE",
-            items: [
-              { name: "Boss Chairs", href: "/boss-chairs" },
-              { name: "High Back Mesh Chairs", href: "/high-back-mesh-chairs" },
-              { name: "Medium Back Workstation Chairs", href: "/medium-back-workstation-chairs" },
-              { name: "Lounge Chairs", href: "/lounge-chairs" },
-              { name: "Office Sofas", href: "/office-sofas" },
-              {
-                name: "Tables",
-                href: "/office-tables",
-                subItems: [
-                  { name: "Boss Tables", href: "/office-tables-boss" },
-                  { name: "Conference Room", href: "/office-tables-conference" },
-                  { name: "Work Desks", href: "/office-tables-work-desks" },
-                  { name: "Center Tables", href: "/office-tables-center" },
-                ],
-              },
-              { name: "Meeting Room Chairs", href: "/meeting-room-chairs" },
-              { name: "Visitor Chairs", href: "/visitor-chairs" },
-              { name: "Training Chairs", href: "/training-chairs" },
-            ],
-          },
+         {
+  title: "OFFICE",
+  items: [
+    { name: "Boss Chairs", href: "/office-boss-chairs" },
+    { name: "Executive Chairs", href: "/office-executive-chairs" },
+    { name: "Workstation Chairs", href: "/office-workstation-chairs" },
+    { name: "Lounge Chairs", href: "/office-lounge-chairs" },
+    { name: "Office Sofas", href: "/office-sofas" },
+
+    {
+      name: "Tables",
+      href: "/office-tables",
+      subItems: [
+        { name: "Boss Tables", href: "/office-tables-boss" },
+        { name: "Conference Room Tables", href: "/office-tables-conference" },
+        { name: "Work Tables", href: "/office-tables-work" },
+        { name: "Center Tables", href: "/office-tables-center" },
+        { name: "Height Adjustable Tables", href: "/office-tables-height-adjustable" },
+      ],
+    },
+
+    { name: "Meeting Room Chairs", href: "/office-meeting-room-chairs" },
+    { name: "Visitor Chairs", href: "/office-visitor-chairs" },
+    { name: "Training Chairs", href: "/office-training-chairs" },
+    { name: "Waiting Area Sofas", href: "/office-waiting-area-sofas" },
+  ],
+},
         ],
       },
       {
         sections: [
-          {
-            title: "CAFE",
-            items: [
-              { name: "Cafe Chairs", href: "/cafe-chairs" },
-              { name: "Dining Chairs", href: "/cafe-dining-chairs" },
-              { name: "Bar Stools", href: "/bar-stools" },
-              { name: "Outdoor", href: "/outdoor" },
-              { name: "Cafe Tables", href: "/cafe-tables" },
-              { name: "High Tables", href: "/high-tables" },
-            ],
-          },
+         {
+  title: "CAFE",
+  items: [
+    { name: "Cafe Chairs", href: "/cafe-chairs" },
+    { name: "Bar Stools", href: "/cafe-bar-stools" },
+    { name: "Outdoor Chairs", href: "/cafe-outdoor-chairs" },
+    { name: "Cafe Tables", href: "/cafe-tables" },
+    { name: "High Tables", href: "/cafe-high-tables" },
+    { name: "Table Bases", href: "/cafe-table-bases" },
+  ],
+},
         ],
       },
     ],
@@ -129,7 +176,7 @@ const navigation = [
       { name: "Home Projects", href: "/homeprojects" },
       { name: "Chair Catalogues", href: "/chaircatalog" },
       { name: "Choose Upholstery", href: "/chooseupholstery" },
-      { name: "Send an Enquiry", href: "/funrifanenquiry" },
+      // { name: "Send an Enquiry", href: "/funrifanenquiry" },
     ],
   },
 
@@ -350,90 +397,72 @@ export function Header() {
       )
     ) ?? false;
 
-const forceCompact = scrolled || openDropdown === "Furniture";
+  const forceCompact = scrolled || openDropdown === "Furniture";
 
   return (
-   <header
-  className={cn(
-    "sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-    openDropdown ? "border-b-0" : "border-b border-border"
-  )}
->
+    <header
+      className={cn(
+        "sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        openDropdown ? "border-b-0" : "border-b border-border"
+      )}
+    >
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* ---------- Expanded layout (logo above navbar) ---------- */}
-        {!forceCompact && (
-          <>
-            {/* Row 1: Logo centered */}
+        <div className="relative h-16 flex items-center">
 
-            <div className="h-16 flex justify-center items-center">
-              <Link to="/" className="flex items-center gap-2">
-                <img src={edendekLogo} alt="Edendek logo" className="block h-12 w-auto" />
-              </Link>
-            </div>
+          {/* LEFT: LOGO (ALWAYS FIXED) */}
+          <Link
+            to="/"
+            className="absolute left-4 sm:left-6 flex items-center gap-2"
+          >
+            <img
+              src={edendekLogo}
+              alt="Edendek logo"
+              className={cn(
+                "transition-all duration-300",
+                scrolled ? "h-10" : "h-12"
+              )}
+            />
+          </Link>
 
-
-
-            {/* Row 2: Navbar centered + desktop utilities at right */}
-            <div className="h-12 relative flex justify-center items-center">
-              <NavLinks
-                navigation={navigation}
-                openDropdown={openDropdown}
-                setOpenDropdown={setOpenDropdown}
-                isPathActive={isPathActive}
-                isMegaActive={isMegaActive}
-              />
-              <div className="absolute right-0 top-1/2 -translate-y-1/2">
-                <DesktopUtilities />
-              </div>
-            </div>
-
-          </>
-        )}
-
-        {/* ---------- Compact layout (logo left • navbar centered • utilities right) ---------- */}
-        {forceCompact && (
-          <div className="h-16 relative flex items-center transition-all duration-500">
-            {/* Left: Logo */}
-            <Link to="/" className="flex items-center gap-2">
-              <img src={edendekLogo} alt="Edendek logo" className="block h-12 w-auto" />
-            </Link>
-
-
-            {/* Center: Nav (absolute true center, independent of left/right widths) */}
-            <div className="absolute left-1/2 -translate-x-1/2">
-              <NavLinks
-                navigation={navigation}
-                openDropdown={openDropdown}
-                setOpenDropdown={setOpenDropdown}
-                isPathActive={isPathActive}
-                isMegaActive={isMegaActive}
-              />
-            </div>
-
-            {/* Right: Contact + Admin (desktop only) */}
-            <div className="ml-auto">
-              <DesktopUtilities />
-            </div>
-
-            {/* Mobile menu button (only on small screens) */}
-            <div className="md:hidden absolute right-2">
-              <Button variant="ghost" size="sm" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </Button>
-            </div>
+          {/* CENTER: NAV */}
+          <div className="absolute left-1/2 -translate-x-1/2">
+            <NavLinks
+              navigation={navigation}
+              openDropdown={openDropdown}
+              setOpenDropdown={setOpenDropdown}
+              isPathActive={isPathActive}
+              isMegaActive={isMegaActive}
+            />
           </div>
-        )}
+
+          {/* RIGHT: UTILITIES */}
+          <div className="absolute right-4 sm:right-6 hidden md:flex">
+            <DesktopUtilities />
+          </div>
+
+          {/* MOBILE MENU */}
+          <div className="md:hidden absolute right-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+          </div>
+
+        </div>
 
 
         {/* ---------- MEGA DROPDOWN (anchored below the header) ---------- */}
         {openDropdown === "Furniture" && furniture && (
           <div
-  className="absolute left-0 right-0 bg-white shadow-lg z-50"
-  style={{ top: "100%" }}
-  data-dropdown-area
->
+            className="absolute left-0 right-0 bg-white shadow-lg z-50"
+            style={{ top: "100%" }}
+            data-dropdown-area
+          >
 
             <div className="grid grid-cols-[1fr_1fr_1fr_280px] gap-8 px-6 py-6 ml-10 mr-20">
               {/* 3 text columns */}
@@ -509,7 +538,7 @@ const forceCompact = scrolled || openDropdown === "Furniture";
                     )}
                     {furniture.image?.cta && (
                       <Link to={furniture.image.cta.href} onClick={() => setOpenDropdown(null)}>
-                        <Button size="sm" variant="secondary"  className="
+                        <Button size="sm" variant="secondary" className="
   bg-[#14294C]
     text-white
     hover:bg-[#1b3a6d]

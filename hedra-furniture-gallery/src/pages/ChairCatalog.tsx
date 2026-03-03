@@ -82,7 +82,7 @@ export default function ChairCatalog() {
             <motion.div variants={container} initial="hidden" animate="show">
               <motion.h2
                 variants={item}
-                className="text-2xl md:text-3xl lg:text-4xl font-semibold text-[#14294C] mb-3"
+                className="text-4xl md:text-5xl font-bold text-[#14294C] mb-4"
               >
                 Chair Catalogue
               </motion.h2>
@@ -92,7 +92,7 @@ export default function ChairCatalog() {
               />
               <motion.p
                 variants={item}
-                className="text-sm md:text-base text-gray-900 max-w-3xl mx-auto leading-relaxed"
+                className="text-lg text-gray-900 max-w-2xl mx-auto"
               >
                 Browse our curated collection of chairs. Download the PDF catalogues
                 and explore our premium designs.
